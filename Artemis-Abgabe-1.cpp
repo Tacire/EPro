@@ -1,5 +1,9 @@
 #include "std_lib_inc.h"
 
+/**
+ * Liste an Ausnahmefällen zur unten definierten Regel. 
+ * Zur Übersichtlichkeit in seperate Funktion gegliedert.
+ */
 string ausnahme(int zahl){
     switch(zahl){
         case 1:
@@ -17,6 +21,12 @@ string ausnahme(int zahl){
     }
 }
 
+/**
+ * Erstellt Zahlenwort basierend auf Regel:
+ * "*hundert*und*zig"
+ * Ausnahmen in der Schreibweise von 10er-vielfachen sind hier abgefangen.
+ * Ruft ausnahme(zahl) für sonstige Ausnahmen auf.
+ */
 string zahl_zu_wort(int zahl){
     string zahlen_wort = "";
     string einer[10] = {"","ein","zwei","drei","vier","fuenf","sechs","sieben","acht","neun"};
@@ -24,34 +34,42 @@ string zahl_zu_wort(int zahl){
     int dritteStelle = zahl / 100;
     int zweiteStelle = (zahl % 100) / 10;
     int ersteStelle = zahl % 10;
-    
-    if(ausnahme(zahl) != ""){
-        return ausnahme(zahl);
-    }
 
+    // Startet das Zahlenwort mit der 100er Zahl, mit der immer das Wort beginnt
     if(dritteStelle == 1){
         zahlen_wort += "hundert";
     }else if(dritteStelle > 1){
         zahlen_wort += einer[dritteStelle] + "hundert";
     }
 
-    if(ersteStelle == 1){
-        zahlen_wort += einer[ersteStelle];
-    }else if(ersteStelle > 1){
-        zahlen_wort += einer[ersteStelle] + "und";
+    /** 
+     *  Die Hunderterstelle ist geregelt, falls die 10er und 1er Stelle eine Ausnahme sind,
+     *  wird diese dem String hinzugefügt. Ansonsten wird der String nach normaler Regel
+     *  "weiterberechnet".
+     */
+    if(ausnahme(zahl % 100) != ""){
+        zahlen_wort += ausnahme(zahl % 100);
+    }else{
+        if(ersteStelle == 1){
+            zahlen_wort += einer[ersteStelle];
+        }else if(ersteStelle > 1){
+            zahlen_wort += einer[ersteStelle] + "und";
+        }
+
+        if(zweiteStelle == 1){
+            zahlen_wort += "zehn";
+        }else if(zweiteStelle == 2){
+            zahlen_wort += "zwanzig";
+        }else if(zweiteStelle == 3){
+            zahlen_wort += "dreissig";
+        }else if(zweiteStelle == 7){
+            zahlen_wort += "siebzig";
+        }else if(zweiteStelle > 3){
+            zahlen_wort += einer[zweiteStelle] + "zig";
+        }
     }
 
-    if(zweiteStelle == 1){
-        zahlen_wort += "zehn";
-    }else if(zweiteStelle == 2){
-        zahlen_wort += "zwanzig";
-    }else if(zweiteStelle == 3){
-        zahlen_wort += "dreissig";
-    }else if(zweiteStelle == 7){
-        zahlen_wort += "siebzig";
-    }else if(zweiteStelle > 3){
-        zahlen_wort += einer[zweiteStelle] + "zig";
-    }
+    return zahlen_wort;
 
 }
 
@@ -63,7 +81,7 @@ int main(){
         if(zahl < 1 || zahl > 999){
             cout << "Zahl ausserhalb des gueltigen Bereichs. \n";
         }else{
-            cout << zahl_zu_wort(zahl);
+            cout << zahl_zu_wort(zahl) << "\n";
         }
         cin >> zahl;
     }
