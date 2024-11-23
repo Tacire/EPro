@@ -50,7 +50,7 @@ string zahl_zu_wort(int zahl){
     if(ausnahme(zahl % 100) != ""){
         zahlen_wort += ausnahme(zahl % 100);
     }else{
-        if(ersteStelle == 1){
+        if(zweiteStelle == 0){
             zahlen_wort += einer[ersteStelle];
         }else if(ersteStelle > 1){
             zahlen_wort += einer[ersteStelle] + "und";
