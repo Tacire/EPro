@@ -62,6 +62,8 @@ string zahl_zu_wort(int zahl){
             zahlen_wort += "zwanzig";
         }else if(zweiteStelle == 3){
             zahlen_wort += "dreissig";
+        }else if(zweiteStelle == 6){
+            zahlen_wort += "sechzig";
         }else if(zweiteStelle == 7){
             zahlen_wort += "siebzig";
         }else if(zweiteStelle > 3){
