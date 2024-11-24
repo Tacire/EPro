@@ -52,7 +52,7 @@ string zahl_zu_wort(int zahl){
     }else{
         if(zweiteStelle == 0){
             zahlen_wort += einer[ersteStelle];
-        }else if(ersteStelle > 1){
+        }else if(ersteStelle > 0){
             zahlen_wort += einer[ersteStelle] + "und";
         }
 
