@@ -1,3 +1,6 @@
+/**
+ * Wandelt Zahlen 1-999 in entsprechendes Zahlenwort um und gibt es aus
+ */
 #include "std_lib_inc.h"
 
 /**
