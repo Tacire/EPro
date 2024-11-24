@@ -3,6 +3,10 @@
  */
 #include "std_lib_inc.h"
 
+// Konstanten für Regelfälle der Zahlenwörter
+const string einer[10] = {"","ein","zwei","drei","vier","fuenf","sechs","sieben","acht","neun"};
+
+
 /**
  * Liste an Ausnahmefällen zur unten definierten Regel. 
  * Zur Übersichtlichkeit in seperate Funktion gegliedert.
@@ -32,8 +36,9 @@ string ausnahme(int zahl){
  */
 string zahl_zu_wort(int zahl){
     string zahlen_wort = "";
-    string einer[10] = {"","ein","zwei","drei","vier","fuenf","sechs","sieben","acht","neun"};
 
+    // Untergliederung nach folgendem Schema:
+    // 100er = dritte Stelle, 10er = zweite Stelle, 1er = erste Stelle
     int dritteStelle = zahl / 100;
     int zweiteStelle = (zahl % 100) / 10;
     int ersteStelle = zahl % 10;
@@ -53,8 +58,10 @@ string zahl_zu_wort(int zahl){
     if(ausnahme(zahl % 100) != ""){
         zahlen_wort += ausnahme(zahl % 100);
     }else{
-        if(zweiteStelle == 0){
+        //10er und 0er verzichten auf das "und" nach der ersten Zahl
+        if(zweiteStelle <= 1){
             zahlen_wort += einer[ersteStelle];
+        //20er - 90er benötigen ein "und" nach der Nennung der ersten Stelle
         }else if(ersteStelle > 0){
             zahlen_wort += einer[ersteStelle] + "und";
         }
@@ -91,6 +98,6 @@ int main(){
         cin >> zahl;
     }
     
-    cout << "Eingabe beendet \n";
+    cout << "Eingabe beendet. \n";
     return 0;
 }
