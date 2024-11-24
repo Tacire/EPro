@@ -37,7 +37,6 @@ string ausnahme(int zahl){
 string zahl_zu_wort(int zahl){
     string zahlen_wort = "";
 
-    // Untergliederung nach folgendem Schema:
     // 100er = dritte Stelle, 10er = zweite Stelle, 1er = erste Stelle
     int dritteStelle = zahl / 100;
     int zweiteStelle = (zahl % 100) / 10;
