@@ -85,10 +85,10 @@ class GameState {
         int touchGhost(){
             hitbyghost = true;
         }
+        const Field field;
+        const Player player;
     private:
         bool hitbyghost;
-        Field field;
-        Player player;
 };
 
 /* Diese Funktion überprüft, ob die Eingabe des Nutzers zulässig ist
@@ -132,15 +132,25 @@ GameState initializeGame(string initString){
 
     vector<vector<char>> maze;
     for(int i = 0; i < rows; i++){
-        if(initData.length() != columns){
+        vector<char> row;
+        if(initData[2+i].length() != columns){
             //Werfe Exception
         }
         for(int j = 0; j < columns; j++){
-            maze[i][j] = initData[1+i][j];
+            row.push_back(initData[2+i][j]);
         }
+        maze.push_back(row);
+        row.clear();
     }
 
-    GameState game = GameState(Field(rows,columns,maze),Player())
+    playerRow = atoi(initData[2+rows]);
+    playerColumn = atoi(initData[3+rows])
+    
+    if(playerRow >= rows || playerColumn >= columns){
+        //werfe exception, spieler out of bounds
+    }
+
+    return GameState(Field(rows,columns,maze),Player(playerRow,playerColumn));
 
 
 }
