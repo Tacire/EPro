@@ -46,28 +46,64 @@ class Player {
 class Field{
     public:
         Field(unsigned int rows, unsigned int columns, vector<vector<char>> newMaze){
+            if(!checkValidField(rows,columns,newMaze)){
+                throw std::invalid_argument("Invalid char in Maze");
+            }
             maxRow = rows;
             maxColumn = columns;
             kMaze = newMaze;
         }
         char getField(unsigned int row, unsigned int column){
-            if(row < maxRow  && column < maxColumn){
-                return kMaze[row][column];
-            }else{
-                //throw exception
+            if(row >= maxRow || column >= maxColumn){
+                throw std::invalid_argument("Tried to read out of bounds Field");
             }
+            return kMaze[row][column];
         }
-        char changeField(unsigned int row, unsigned int column, char newField){
-            if(row < maxRow  && column < maxColumn){
-                kMaze[row][column] = newField;
-            }else{
-                //throw exception
+        int changeField(unsigned int row, unsigned int column, char newField){
+            if(!checkInputValid(newField)){
+                throw std::invalid_argument("Tried to write invalid char to Field");
+            }else if(row >= maxRow || column >= maxColumn){
+                throw std::invalid_argument("Tried to write out of bounds Field");
             }
+            
+            kMaze[row][column] = newField;
+            return 0;
         }
     private:
         unsigned int maxRow;
         unsigned int maxColumn;
         vector<vector<char>> kMaze;
+
+        bool checkValidChar(char charToCheck){
+            constexpr char[] validChars = {'.', '#', 'Z', 'K', 'T', 'A'};
+            bool validChar = false;
+            
+            for(char validChar : validChars){
+                if(mazeToCheck[i][j] == validChar){
+                    validChar = true;
+                }
+            }
+            
+            return validChar;
+        }
+        bool checkValidField(unsigned int rows, unsigned int columns, vector<vector<char>> mazeToCheck){
+
+            if(mazeToCheck.size() != rows){
+                return false;
+            }
+
+            for(int i = 0; i < rows; i++){
+                if(mazeToCheck[i].size() != columns){
+                    return false
+                }
+                for(int j = 0; j < columns, j++){
+                    if(!checkValidChar(mazeToCheck[i][j])){
+                        return false;
+                    }
+            }
+            return true;
+            
+        }
 };
 
 //Exception bei falscher Bewegung & falsche Eingabe
@@ -119,22 +155,22 @@ vector<string> splitString(string toSplit){
 
 GameState initializeGame(string initString){
     vector<string> initData = splitString(initString);
-    if(initData.size() <= 4){
-        //Werfe Exception bei minimum falsch
+    if(initData.size() < 4){
+        throw std::invalid_argument("At least 4 arguments necessary");
     }
 
-    columns = stoi(initData[0]);
-    rows = stoi(initData[1]);
+    rows = stoi(initData[0]);
+    columns = stoi(initData[1]);
     
     if(initData.size() != (4 + rows)){
-        //Werfe Exception falscher init string
+        throw std::invalid_argument("Wrong number of arguments given");
     }
 
     vector<vector<char>> maze;
     for(int i = 0; i < rows; i++){
         vector<char> row;
         if(initData[2+i].length() != columns){
-            //Werfe Exception
+            throw std::invalid_argument("Columns argument not matching maze");
         }
         for(int j = 0; j < columns; j++){
             row.push_back(initData[2+i][j]);
@@ -147,12 +183,10 @@ GameState initializeGame(string initString){
     playerColumn = atoi(initData[3+rows])
     
     if(playerRow >= rows || playerColumn >= columns){
-        //werfe exception, spieler out of bounds
+        throw std::invalid_argument("Player out of bounds of maze");
     }
 
     return GameState(Field(rows,columns,maze),Player(playerRow,playerColumn));
-
-
 }
 
 /* In der main-Funktio wird zunächst die Ausgangssituation vom Labyrinth ausgegeben,
