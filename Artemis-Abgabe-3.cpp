@@ -9,14 +9,21 @@ constexpr int kCols = 5;
 
 class Player {
     public:
-        Player(vector<int> startPosition, )
+        Player(vector<int> startPosition){
+            position = startPosition;
+            keyCount = 0;
+        }
+        Player(vector<int> startPosition, unsigned int numberOfKeys){
+            position = startPosition;
+            keyCount = numberOfKeys;
+        }
         int getX(){
             return position[0];
         }
         int getY(){
             return position[1];
         }
-        int setPosition(vecotr<int> newPosition){
+        int setPosition(vector<int> newPosition){
             position = newPosition;
             return 0;
         }
@@ -29,12 +36,12 @@ class Player {
             return 0;
         }
 
-        int useKey(){
+        bool useKey(){
             if(keyCount>0){
                 keyCount--;
+                return true;
             }
-            //Evtl. Exception werfen
-            return 0;
+            return false;
         }
     private:
         vector<int> position;
