@@ -3,17 +3,13 @@
 //
 #include "std_lib_inc.h"
 
-// Labyrinth-Dimensionen als konstanter Ausdruck
-constexpr int kRows = 5;
-constexpr int kCols = 5;
-
 class Player {
     public:
-        Player(vector<int> startPosition){
+        Player(vector<unsigned int> startPosition){
             position = startPosition;
             keyCount = 0;
         }
-        Player(vector<int> startPosition, unsigned int numberOfKeys){
+        Player(vector<unsigned int> startPosition, unsigned int numberOfKeys){
             position = startPosition;
             keyCount = numberOfKeys;
         }
@@ -23,19 +19,17 @@ class Player {
         int getY(){
             return position[1];
         }
-        int setPosition(vector<int> newPosition){
+        int setPosition(vector<unsigned int> newPosition){
             position = newPosition;
             return 0;
         }
         int getKeyCount(){
             return keyCount;
         }
-    
         int addKey(){
             keyCount++;
             return 0;
         }
-
         bool useKey(){
             if(keyCount>0){
                 keyCount--;
@@ -44,48 +38,57 @@ class Player {
             return false;
         }
     private:
-        vector<int> position;
+        vector<unsigned int> position;
         unsigned int keyCount;
-}
+};
 
 class Field{
     public:
-    int getRows(){
-        return noRows;
-    }
-    int getColumns(){
-        return noColumns;
-    };
-    vector<vector<char>> kMaze;
+        Field(unsigned int rows, unsigned int columns, vector<vector<char>> newMaze){
+            maxRow = rows;
+            maxColumn = columns;
+            kMaze = newMaze;
+        }
+        char getField(unsigned int row, unsigned int column){
+            if(row < maxRow  && column < maxColumn){
+                return kMaze[row][column];
+            }else{
+                //throw exception
+            }
+        }
+        char changeField(unsigned int row, unsigned int column, char newField){
+            if(row < maxRow  && column < maxColumn){
+                kMaze[row][column] = newField;
+            }else{
+                //throw exception
+            }
+        }
     private:
-        int noRows;
-        int noColumns;
-}
+        unsigned int maxRow;
+        unsigned int maxColumn;
+        vector<vector<char>> kMaze;
+};
 
 //Exception bei falscher Bewegung & falsche Eingabe
 //Nicht bei Geist
-class gameState {
+class GameState {
     public:
-    bool gameAlive;
-    Field field;
-    Player player;
-    
+        GameState(Field newField, Player newPlayer){
+            field = newField;
+            player = newPlayer;
+            hitbyghost = false; 
+        }
+        bool alive(){
+            return hitbyghost;
+        }
+        int touchGhost(){
+            hitbyghost = true;
+        }
     private:
-    bool hitbyghost;
-}
-
-// Labyrinth-Definition
-// Interpretiere als Zeilen, dann Spalten
-/**vector<vector<char>> kMaze = {
-    {'#', '.', '.', '.', '.'},
-    {'#', '.', '#', '.', '.'},
-    {'.', 'Z', '#', '.', '.'},
-    {'.', '#', '#', '#', '.'},
-    {'.', '.', '.', '.', '.'},
+        bool hitbyghost;
+        Field field;
+        Player player;
 };
-*/
-// Startposition des Spielers
-//const vector<int> kPlayerStartPosition = {4, 0};
 
 /*  Diese Funktion printed das Labyrinth richtig formatiert auf die Konsole
  *  inklusive der momentanen Position des Spielers */
