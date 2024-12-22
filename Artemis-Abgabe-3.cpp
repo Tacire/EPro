@@ -2,6 +2,7 @@
 // Created by hendrik on 04.12.24.
 //
 #include "std_lib_inc.h"
+#include <string>
 
 class Player {
     public:
@@ -90,109 +91,6 @@ class GameState {
         Player player;
 };
 
-/*  Diese Funktion printed das Labyrinth richtig formatiert auf die Konsole
- *  inklusive der momentanen Position des Spielers */
-int printLabyrinth(vector<int> playerPosition) {
-    for (int i = 0; i < kRows; ++i) {
-        for (int j = 0; j < kCols; ++j) {
-            if (i == playerPosition[0] && j == playerPosition[1]) {
-                cout << 'S' << "  ";
-            }
-            else {
-                cout << kMaze[i][j] << "  ";
-            }
-        }
-        cout << "\n";
-    }
-    return 0;
-}
-
-/* Diese Funktion überprüft, ob der nächste Schritt des
- * Spielers zu einer kollision mit einem # führen oder ihn aus
- * dem Bereich des Labyrinths bringen würde
- * Wenn die gewünschte Bewegung möglich ist, gibt sie true
- * zurück, sonst false */
-bool checkCollision(vector<int> currentPlayerPosition, char input) {
-    bool movementPossible = false;
-    switch (input) {
-        case 'w':
-            if ((currentPlayerPosition[0] - 1) < 0 || kMaze[(currentPlayerPosition[0] - 1)][currentPlayerPosition[1]] == '#') {
-                movementPossible = false;
-            }
-            else {
-                movementPossible = true;
-            }
-        break;
-        case 's':
-            if ((currentPlayerPosition[0] + 1) > (kRows-1) || kMaze[(currentPlayerPosition[0] + 1)][currentPlayerPosition[1]] == '#') {
-                movementPossible = false;
-            }
-            else {
-                movementPossible = true;
-            }
-        break;
-        case 'a':
-            if ((currentPlayerPosition[1] - 1) < 0 || kMaze[currentPlayerPosition[0]][(currentPlayerPosition[1] - 1)] == '#') {
-                movementPossible = false;
-            }
-            else {
-                movementPossible = true;
-            }
-        break;
-        case 'd':
-            if ((currentPlayerPosition[1] + 1) > (kCols-1) || kMaze[currentPlayerPosition[0]][(currentPlayerPosition[1] + 1)] == '#') {
-                movementPossible = false;
-            }
-            else {
-                movementPossible = true;
-            }
-        break;
-    }
-    return movementPossible;
-}
-
-/**
- * Interagiert mit dem Feld auf dem der Spieler gerade steht.
- * Relevant für Key oder Geist-Fall
- */
-int interactCurrentField(vector<int> currentPlayerPosition){
-    //Fall Geist
-    if(kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] == 'A'){
-        cout << "Sie haben einen Geist getroffen! Game Over!\n";
-        exit(); //Erweiterbar zu Exception
-    //Fall Key
-    }else if(kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] == 'K'){
-        kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] = '.';
-        keyCount++;
-    //Fall Tür
-    }else if(kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] == 'T'){
-        kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] = '.';
-        keyCount--;
-    }
-    return 0;
-}
-
-/* Diese Funktion bewegt den Charakter, indem sie die momentane Position
- * als 2D vector nimmt und diese dann entsprechend von input anpasst */
-vector<int> moveCharacter(vector<int> currentPlayerPosition, char input) {
-    vector<int> workingPlayerPosition = currentPlayerPosition;
-    switch (input) {
-        case 'w':
-            workingPlayerPosition[0] -= 1;
-        break;
-        case 's':
-            workingPlayerPosition[0] += 1;
-        break;
-        case 'a':
-            workingPlayerPosition[1] -= 1;
-        break;
-        case 'd':
-            workingPlayerPosition[1] += 1;
-        break;
-    }
-    return workingPlayerPosition;
-}
-
 /* Diese Funktion überprüft, ob die Eingabe des Nutzers zulässig ist
  * Wenn ja, gibt sie true zurück, sonst false */
 bool checkInputValid(char input) {
@@ -203,15 +101,48 @@ bool checkInputValid(char input) {
     return validInput;
 }
 
-/* Diese Funktion überprüft, ob der Spieler das Ziel, welches
- * im Labyrinth mit 'Z' dargestellt ist, erreicht hat
- * Wenn ja gibt sie true zurück, sonst false */
-bool checkGoalReached(vector<int> currentPlayerPosition) {
-    bool goalReached = false;
-    if (kMaze[currentPlayerPosition[0]][currentPlayerPosition[1]] == 'Z') {
-        goalReached = true;
+/**
+ * Splittet einen String anhand Leerzeichen
+ */
+vector<string> splitString(string toSplit){
+    vector<string> splittedString;
+
+    const char delimiter = " ";
+    char *word = strtok(toSplit, delimiter);
+    while(word != nullptr){
+        splittedStr.push_back(word);
+        data = strtok(nullptr, delimiter);
     }
-    return goalReached;
+
+    return splittedString;
+}
+
+GameState initializeGame(string initString){
+    vector<string> initData = splitString(initString);
+    if(initData.size() <= 4){
+        //Werfe Exception bei minimum falsch
+    }
+
+    columns = stoi(initData[0]);
+    rows = stoi(initData[1]);
+    
+    if(initData.size() != (4 + rows)){
+        //Werfe Exception falscher init string
+    }
+
+    vector<vector<char>> maze;
+    for(int i = 0; i < rows; i++){
+        if(initData.length() != columns){
+            //Werfe Exception
+        }
+        for(int j = 0; j < columns; j++){
+            maze[i][j] = initData[1+i][j];
+        }
+    }
+
+    GameState game = GameState(Field(rows,columns,maze),Player())
+
+
 }
 
 /* In der main-Funktio wird zunächst die Ausgangssituation vom Labyrinth ausgegeben,
@@ -221,34 +152,13 @@ bool checkGoalReached(vector<int> currentPlayerPosition) {
  * Das Programm wird beendet wenn der Spielercharakter 'S' das Ziel 'Z' erreicht hat */
 int main()
 {
-    printLabyrinth(kPlayerStartPosition);
-    vector<int> currentPlayerPosition = kPlayerStartPosition;
-    char input;
-    cin >> input;
-    while (cin) {
-        bool validInput = checkInputValid(input);
-        if (!validInput) {
-            cout << "Diese Eingabe kenne ich nicht. Gib 'h' ein, um eine Hilfe zu erhalten.\n";
-            printLabyrinth(currentPlayerPosition);
-        }
-        if (input == 'h') {
-            cout << "Wenn du bei diesem Spiel Hilfe brauchst frag wen anders :D\n";
-        }
 
-        bool movementPossible = checkCollision(currentPlayerPosition, input);
-        if (movementPossible) {
-            currentPlayerPosition = moveCharacter(currentPlayerPosition, input);
-            printLabyrinth(currentPlayerPosition);
-        }
-        else if (!movementPossible && validInput && input != 'h') {
-            cout << "Bewegung nicht moeglich!\n";
-            printLabyrinth(currentPlayerPosition);
-        }
+    cout << "Bitte Spieleingaben tätigen\n";
+    cout << "Schema: <Zeilen> <Spalte> <Labyrinth-Zeichen> <Spieler Zeile> <Spieler Spalte>\n"
 
-        if (checkGoalReached(currentPlayerPosition)) {
-            cout << "Ziel erreicht! Herzlichen Glueckwunsch!\n";
-            break;
-        }
-        cin >> input;
+    string initInput
+    cin >> initInput;
+    if(cin){
+        GameState game = initializeGame(initInput);
     }
 }
