@@ -16,10 +16,10 @@ class Player {
             position[1] = startColumn;
             keyCount = numberOfKeys;
         }
-        int getRow(){
+        unsigned int getRow(){
             return position[0];
         }
-        int getColumn(){
+        unsigned int getColumn(){
             return position[1];
         }
         int setRow(unsigned int newRow){
@@ -30,7 +30,7 @@ class Player {
             position[1] = newColumn;
             return 0;
         }
-        int getKeyCount(){
+        unsigned int getKeyCount(){
             return keyCount;
         }
         int addKey(){
@@ -58,8 +58,24 @@ class Field{
             maxRow = rows;
             maxColumn = columns;
             kMaze = newMaze;
+            /**
+            for(vector<char> row : newMaze){
+                vector<char> newVector = row;
+                kMaze.push_back(newVector);
+            }
+            cout << kMaze[1][1] << "\n";
+            for(unsigned int i= 0; i < rows; i++){
+                vector<char> row;
+                for(unsigned int j = 0; j < columns; i++){
+                    row.push_back(newMaze[i][j]);
+                }
+                kMaze.push_back(row);   
+                row.clear();
+            } */
         }
-        char getField(unsigned int row, unsigned int column){
+        char getFieldValue(unsigned int row, unsigned int column){
+            cout << row << "|" << this->maxRow << endl;
+            cout << column << "|" << this->maxColumn << endl;
             if(row >= maxRow || column >= maxColumn){
                 throw std::invalid_argument("Tried to read out of bounds Field");
             }
@@ -96,11 +112,11 @@ class Field{
             if(mazeToCheck.size() != rows){
                 return false;
             }
-            for(int i = 0; i < rows; i++){
+            for(unsigned int i = 0; i < rows; i++){
                 if(mazeToCheck[i].size() != columns){
                     return false;
                 }
-                for(int j = 0; j < columns; j++){
+                for(unsigned int j = 0; j < columns; j++){
                     if(!checkValidChar(mazeToCheck[i][j])){;
                         cout << mazeToCheck[i][j] << "\n";
                         return false;
@@ -116,17 +132,9 @@ class Field{
 //Nicht bei Geist
 class GameState {
     public:
-        GameState(unsigned int rows, unsigned int columns, vector<vector<char>> maze, unsigned int playerRow, unsigned int playerColumn){
-            
-            Field newField(rows,columns,maze);
-
-            if(playerRow >= rows || playerColumn >= columns){
-                throw std::invalid_argument("Player out of bounds of maze");
-            }
-            Player newPlayer(playerRow,playerColumn);
-            
-            field = &newField;
-            player = &newPlayer;
+        GameState(Field * newField, Player * newPlayer){    
+            field = newField;
+            player = newPlayer;
             hitbyghost = false; 
         }
         bool alive(){
@@ -181,9 +189,9 @@ GameState initializeGame(string initString){
     }
 
     vector<vector<char>> maze;
-    for(int i = 0; i < rows; i++){
+    for(unsigned int i = 0; i < rows; i++){
         vector<char> row;
-        for(int j = 0; j < columns; j++){
+        for(unsigned int j = 0; j < columns; j++){
             row.push_back(initData[2+i][j]);
         }
         maze.push_back(row);
@@ -192,16 +200,21 @@ GameState initializeGame(string initString){
 
     unsigned int playerRow = atoi(initData[2+rows]);
     unsigned int playerColumn = atoi(initData[3+rows]);
+    cout << size(maze) << "\n";
 
-    GameState newGame(rows,columns,maze,playerRow,playerColumn);
-
+    if(playerRow >= rows || playerColumn >= columns){
+        throw std::invalid_argument("Player out of bounds of maze");
+    }
+    GameState newGame(new Field(rows,columns,maze),new Player(playerRow,playerColumn));
+    cout << size(newGame.field->kMaze) << "sdas\n";
+    
     return newGame;
 }
 
 int printGame(GameState game){
-    for (int i = 0; i < game.field->maxRow; i++) {
+    for (unsigned int i = 0; i < game.field->maxRow; i++) {
         cout << "2\n";
-        for (int j = 0; j < game.field->maxColumn; j++) {
+        for (unsigned int j = 0; j < game.field->maxColumn; j++) {
             cout << "3\n";
             if (i == game.player->getRow() && j == game.player->getColumn()) {
                 cout << 'S' << "  ";
@@ -226,10 +239,11 @@ int main()
     cout << "Bitte Spieleingaben tätigen\n";
     cout << "Schema: <Zeilen> <Spalte> <Labyrinth-Zeichen> <Spieler Zeile> <Spieler Spalte>\n";
 
-    string initInput;
-    getline(cin, initInput, '\n');
+    string initInput = "2 2 .. .. 0 1";
+    //getline(cin, initInput, '\n');
 
     GameState game = initializeGame(initInput);
 
-    printGame(game);
+    cout << game.field->getField(1,1) << "\n";
+    //printGame(game);
 }
