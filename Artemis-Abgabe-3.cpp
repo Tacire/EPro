@@ -53,7 +53,7 @@ class Field{
     public:
         Field(unsigned int rows, unsigned int columns, vector<vector<char>> newMaze){
             if(!checkValidField(rows,columns,newMaze)){
-                throw std::invalid_argument("Invalid char in Maze");
+                throw std::invalid_argument("Invalid maze");
             }
             maxRow = rows;
             maxColumn = columns;
@@ -82,15 +82,15 @@ class Field{
 
         bool checkValidChar(char charToCheck){
             constexpr char validChars[6] = {'.', '#', 'Z', 'K', 'T', 'A'};
-            bool validChar = false;
+            bool valid = false;
             
-            for(char validChar : validChars){
-                if(charToCheck == validChar){
-                    validChar = true;
+            for(char possibleChar : validChars){
+                if(charToCheck == possibleChar){
+                    valid = true;
                 }
             }
             
-            return validChar;
+            return valid;
         }
         bool checkValidField(unsigned int rows, unsigned int columns, vector<vector<char>> mazeToCheck){
             if(mazeToCheck.size() != rows){
@@ -101,7 +101,8 @@ class Field{
                     return false;
                 }
                 for(int j = 0; j < columns; j++){
-                    if(!checkValidChar(mazeToCheck[i][j])){
+                    if(!checkValidChar(mazeToCheck[i][j])){;
+                        cout << mazeToCheck[i][j] << "\n";
                         return false;
                     }
                 }
@@ -115,9 +116,17 @@ class Field{
 //Nicht bei Geist
 class GameState {
     public:
-        GameState(Field *newField, Player *newPlayer){
-            field = newField;
-            player = newPlayer;
+        GameState(unsigned int rows, unsigned int columns, vector<vector<char>> maze, unsigned int playerRow, unsigned int playerColumn){
+            
+            Field newField(rows,columns,maze);
+
+            if(playerRow >= rows || playerColumn >= columns){
+                throw std::invalid_argument("Player out of bounds of maze");
+            }
+            Player newPlayer(playerRow,playerColumn);
+            
+            field = &newField;
+            player = &newPlayer;
             hitbyghost = false; 
         }
         bool alive(){
@@ -127,8 +136,8 @@ class GameState {
             hitbyghost = true;
             return 0;
         }
-        Field *field;
-        Player *player;
+        Field * field;
+        Player * player;
     private:
         bool hitbyghost;
 };
@@ -158,7 +167,7 @@ vector<char*> splitString(string toSplit){
     return splittedStr;
 }
 
-GameState * initializeGame(string initString){
+GameState initializeGame(string initString){
     vector<char *> initData = splitString(initString);
     if(initData.size() < 4){
         throw std::invalid_argument("At least 4 arguments necessary");
@@ -174,9 +183,6 @@ GameState * initializeGame(string initString){
     vector<vector<char>> maze;
     for(int i = 0; i < rows; i++){
         vector<char> row;
-        if(sizeof(initData[2+i]) != columns){
-            throw std::invalid_argument("Columns argument not matching maze");
-        }
         for(int j = 0; j < columns; j++){
             row.push_back(initData[2+i][j]);
         }
@@ -186,30 +192,27 @@ GameState * initializeGame(string initString){
 
     unsigned int playerRow = atoi(initData[2+rows]);
     unsigned int playerColumn = atoi(initData[3+rows]);
-    
-    if(playerRow >= rows || playerColumn >= columns){
-        throw std::invalid_argument("Player out of bounds of maze");
-    }
 
-    Field field(rows,columns,maze);
-    Player player(playerRow,playerColumn);
-    GameState newGame(&field,&player);
+    GameState newGame(rows,columns,maze,playerRow,playerColumn);
 
-    return &newGame;
+    return newGame;
 }
 
-int printGame(GameState * game){
-     for (int i = 0; i < game->field->maxRow; ++i) {
-        for (int j = 0; j < game->field->maxColumn; ++j) {
-            if (i == game->player->getRow() && j == game->player->getColumn()) {
+int printGame(GameState game){
+    for (int i = 0; i < game.field->maxRow; i++) {
+        cout << "2\n";
+        for (int j = 0; j < game.field->maxColumn; j++) {
+            cout << "3\n";
+            if (i == game.player->getRow() && j == game.player->getColumn()) {
                 cout << 'S' << "  ";
-            }
-            else {
-                cout << game->field->getField(i,j) << "  ";
+            }else {
+                cout << "3.2\n";
+                cout << game.field->getField(i,j) << "  ";
             }
         }
-        cout << "\n";
+        cout << "4\n";
     }
+    cout << "5\n";
     return 0;
 }
 /* In der main-Funktio wird zunächst die Ausgangssituation vom Labyrinth ausgegeben,
@@ -226,7 +229,7 @@ int main()
     string initInput;
     getline(cin, initInput, '\n');
 
-    GameState * game = initializeGame(initInput);
+    GameState game = initializeGame(initInput);
 
     printGame(game);
 }
