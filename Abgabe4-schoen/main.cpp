@@ -2,6 +2,7 @@
 #include "helper.h"
 
 
+
 // Funktion zur Umrechnung eines Kommandos zu einer neuen Position
 // Vorbedingung: direction muss aus {w, s, a, d} kommen.
 vector<int> new_position_by_direction(vector<int> player_position, char direction)

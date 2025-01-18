@@ -89,6 +89,7 @@ void Maze::changeField(unsigned int& row, unsigned int& column, char& newField){
     }
 
 
+
 vector<vector<char>> Maze::data(){
     return data_;
 }

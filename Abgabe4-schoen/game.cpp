@@ -8,42 +8,7 @@ void toggle_info_mode(GameState& game_state){
     }else{
        game_state.info_mode = true; 
     }
- 
-    
 }
-
-
-// Funktion zur Anzeige des Spielfeldes
-void display_maze(GameState game_state)
-{
-    const int player_row = game_state.player.position[0];
-    const int player_col = game_state.player.position[1];
-
-    //cout << "\033[H\033[J"; // ANSI Escape Code zum Loeschen des Bildschirms
-    for(int i = 0; i < game_state.maze.rows; i++)
-    {
-        for(int j = 0; j < game_state.maze.cols; j++)
-        {
-            if(i == player_row && j == player_col)
-            {
-                cout << 'S';
-            }
-            else
-            {
-                cout << game_state.maze.data[i][j];
-            }
-            cout << " ";
-        }
-        // Printet Infomode nach der ersten Zeile falls aktiviert
-        if(game_state.info_mode && (i == 0)){
-            if(steps_til_goal(game_state, game_state.player.position) != -1){
-                cout << steps_til_goal(game_state, game_state.player.position) << " Schritte bis zum Ziel";
-            }
-        };
-        cout << '\n';
-    }
-}
-
 
 // Fuehrt Aktionen des Spieler-Feldes aus
 // Vorbedingung: Wenn das Feld eine Tuer ist, muss mindestens ein Schluessel zur Verfuegung stehen
