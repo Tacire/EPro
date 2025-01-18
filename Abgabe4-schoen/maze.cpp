@@ -1,13 +1,23 @@
 #include "maze.h"
 
+Maze::Maze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze){
+    //Checkt ob das Init-Maze gültig ist
+    if(!validMaze(maxRows,maxColumns,newMaze)){
+        throw BadMaze{}; // Wenn Maze fasche größe
+    }
+
+    rows = maxRows;
+    cols = maxColumns;
+    data_ = newMaze;
+}
+
 // Gibt die benoetigte Schritte bis zum Ziel an
 // nach vorgegebenen Agorithmus
-int calculate_shortest_path_to_goal(Maze& maze, vector<unsigned int>& position, unsigned int& steps){
-    if(position[0] < maze.rows && position[1] < maze.cols ){
-        char field = game_state.maze.data[position[0]][position[1]];
-    }else{
+int Maze::calculate_shortest_path_to_goal(vector<int> position, unsigned int steps){
+    if(position[0] >= rows && position[1] >= cols ){
         return -1; // Out of Bounds
     }
+    char field = data_[position[0]][position[1]];
 
     if(field == 'Z'){ // Ziel erreicht
         return 0;
@@ -15,10 +25,10 @@ int calculate_shortest_path_to_goal(Maze& maze, vector<unsigned int>& position, 
         return -1;
     }else if(field == '.' || field == 'K' || field == 'A'){ // Wenn das Feld valid ist wird rekursiv weitergesucht
         vector <int> possible_ways;
-        possible_ways.push_back(steps_til_goal(game_state, {position[0]+1,position[1]}, steps -1));
-        possible_ways.push_back(steps_til_goal(game_state, {position[0]-1,position[1]}, steps -1));
-        possible_ways.push_back(steps_til_goal(game_state, {position[0],position[1]+1}, steps -1));
-        possible_ways.push_back(steps_til_goal(game_state, {position[0],position[1]-1}, steps -1));
+        possible_ways.push_back(calculate_shortest_path_to_goal({position[0]+1,position[1]}, steps -1));
+        possible_ways.push_back(calculate_shortest_path_to_goal({position[0]-1,position[1]}, steps -1));
+        possible_ways.push_back(calculate_shortest_path_to_goal({position[0],position[1]+1}, steps -1));
+        possible_ways.push_back(calculate_shortest_path_to_goal({position[0],position[1]-1}, steps -1));
 
         int min = -1;
         for(int i : possible_ways){
@@ -40,3 +50,45 @@ int calculate_shortest_path_to_goal(Maze& maze, vector<unsigned int>& position, 
     }
 }
 
+// Überprüft ob der Feldinhalt einem gültigen Feldwert entspricht
+bool Maze::validField(char& field){
+    bool valid = false;
+    for(char validfield : validFields){
+        if(field == validfield){
+            valid = true;
+        }
+    }
+    return valid;
+}
+bool Maze::validMaze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze){
+    if(newMaze.size() != maxRows){
+        return false; // Wenn Vector falsche größe hat
+    }
+    for(vector<char> row : newMaze){
+        if(row.size() != maxColumns){
+            return false; // Wenn Vector falsche größe
+        }
+        for(char field : row){
+            if(!validField(field)){
+                return false;   //Wenn Feldinhalt nicht gültig ist
+            }
+        }
+    }
+    return true;
+}
+
+
+void Maze::changeField(unsigned int& row, unsigned int& column, char& newField){
+        if(!validField(newField)){
+            throw BadMaze{};
+        }else if(row >= rows || column >= cols){
+            throw BadMaze{};
+        }
+        
+        data_[row][column] = newField;
+    }
+
+
+vector<vector<char>> Maze::data(){
+    return data_;
+}
