@@ -1,6 +1,6 @@
 #include "maze.h"
 
-Maze::Maze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze){
+Maze::Maze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze){
     //Checkt ob das Init-Maze gültig ist
     if(!validMaze(maxRows,maxColumns,newMaze)){
         throw BadMaze{}; // Wenn Maze fasche größe
@@ -13,7 +13,7 @@ Maze::Maze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>
 
 // Gibt die benoetigte Schritte bis zum Ziel an
 // nach vorgegebenen Agorithmus
-int Maze::calculate_shortest_path_to_goal(vector<int> position, unsigned int steps){
+int Maze::calculate_shortest_path_to_goal(vector<int> position, int steps){
     if(position[0] >= rows && position[1] >= cols ){
         return -1; // Out of Bounds
     }
@@ -60,7 +60,7 @@ bool Maze::validField(char& field){
     }
     return valid;
 }
-bool Maze::validMaze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze){
+bool Maze::validMaze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze){
     if(newMaze.size() != maxRows){
         return false; // Wenn Vector falsche größe hat
     }
@@ -78,7 +78,7 @@ bool Maze::validMaze(unsigned int& maxRows, unsigned int& maxColumns, vector<vec
 }
 
 
-void Maze::changeField(unsigned int& row, unsigned int& column, char& newField){
+void Maze::changeField(int& row, int& column, char& newField){
         if(!validField(newField)){
             throw BadMaze{};
         }else if(row >= rows || column >= cols){

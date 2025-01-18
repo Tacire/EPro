@@ -9,17 +9,17 @@
 class Maze
 {
 public:
-    Maze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze);
+    Maze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze);
     
-    int calculate_shortest_path_to_goal(vector<int> position, unsigned int steps);
-    void changeField(unsigned int& row, unsigned int& column, char& newField);
+    int calculate_shortest_path_to_goal(vector<int> position, int steps = 5);
+    void changeField(int& row, int& column, char& newField);
     bool validField(char& field);
-    bool validMaze(unsigned int& maxRows, unsigned int& maxColumns, vector<vector<char>>& newMaze);
+    bool validMaze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze);
     vector<vector<char>> data();
 
         
-    unsigned int rows; // Anzahl der Zeilen des Labyrinths
-    unsigned int cols; // Anzahl der Spalten des Labyrinths
+    int rows; // Anzahl der Zeilen des Labyrinths
+    int cols; // Anzahl der Spalten des Labyrinths
     static constexpr char validFields[] = "ATK.#Z";
 
 private:

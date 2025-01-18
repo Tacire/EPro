@@ -1,11 +1,11 @@
 #include "player.h"
 
-Player::Player(unsigned int startRow, unsigned int startColumn){
+Player::Player(int startRow, int startColumn){
     position = {startRow,startColumn};
     no_keys = 0;
 }
 
-Player::Player(unsigned int startRow, unsigned int startColumn, unsigned int numberOfKeys){
+Player::Player(int startRow, int startColumn, int numberOfKeys){
     position = {startRow,startColumn};
     no_keys = numberOfKeys;
 }
