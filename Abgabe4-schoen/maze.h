@@ -2,7 +2,7 @@
 #define MAZE_H
 #pragma once
 
-#include "std_lib.h"
+#include "std_lib_inc.h"
 #include "helper.h"
 
 // Klasse, die das Labyrinth kapselt
@@ -19,6 +19,7 @@ public:
     }
     const unsigned int rows; // Anzahl der Zeilen des Labyrinths
     const unsigned int cols; // Anzahl der Spalten des Labyrinths
+    static constexpr char validFields[] = "ATK.#Z";
 
     vector<vector<char>> data(){
         return data_;
@@ -38,5 +39,7 @@ public:
 private:
     vector<vector<char>> data_; // Labyrinth-Daten (erst Zeilen dann Spalten)
 };
+
+int calculate_shortest_path_to_goal(Maze& maze, vector<unsigned int>& position, unsigned int& steps);
 
 #endif
