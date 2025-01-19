@@ -4,6 +4,8 @@
 
 #include "maze.h"
 #include "player.h"
+#include "bowie.h"
+#include "conelly.h"
 #include "helper.h"
 
 
@@ -29,6 +31,8 @@ private:
     bool hit_ghost_; // Wurde ein Geist getroffen?
     bool exit_; // Wurde 'q' gerdückt?
     bool info_mode_; // Ist der Infomode aktiviert?
+    vector<Bowie*> bowie_ghosts_;
+    vector<Conelly*> conelly_ghosts_;
 
     //=============== Spieler-Management ===================
     void toggle_info_mode();
@@ -36,6 +40,8 @@ private:
     void process_input(const char input);
 
     //================ Spiel-Methoden=======================
+    vector<vector<char>> create_ghosts(const vector<vector<char>>& unprepared_maze_data);
+    void check_ghost_collision();
     bool position_is_walkable(const vector<int>& position);
     vector<int> new_position_by_direction(const vector<int>& player_position, const char& direction);
     void move_player(const char& direction);

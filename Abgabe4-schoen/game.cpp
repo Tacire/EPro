@@ -1,12 +1,42 @@
 #include "game.h"
 
-GameState::GameState(const int& rows, const int& cols, const vector<vector<char>>& labyrinth_data, const int& player__row, const int& player__col){
-    maze_ = new Maze(rows,cols,labyrinth_data);
-    player_ = new Player(player__row, player__col);
+GameState::GameState(const int& rows, const int& cols, const vector<vector<char>>& labyrinth_data, const int& player_row, const int& player_col){
+    
+    vector<vector<char>> prepared_labyrinth = create_ghosts(labyrinth_data);
+    maze_ = new Maze(rows,cols,prepared_labyrinth);
+    player_ = new Player(player_row, player_col);
     info_mode_ = false;
     exit_ = false;
     hit_ghost_ = false;
 }
+
+// Füllt Liste der existierenden Bowie und Conelly Geister (erstellt "Geister"-Instanzen).
+// Löscht diese aus der Labyrinth Karte und gibt die neue Karte zurück
+vector<vector<char>> GameState::create_ghosts(const vector<vector<char>>& labyrinth_data){
+    vector<vector<char>> updated_maze_data;
+
+    const int no_rows = labyrinth_data.size();
+    for(int i = 0; i < no_rows; i++)
+    {
+        int no_columns = labyrinth_data[i].size();
+        vector<char> rows = {};
+        for(int j = 0; j < no_columns; j++){
+            char field = labyrinth_data[i][j];
+            if(field == 'B'){
+                bowie_ghosts_.push_back(new Bowie(i,j));
+                field = '.';
+            }else if(field == 'C'){
+                conelly_ghosts_.push_back(new Conelly(i,j));
+                field = '.';
+            }
+            rows.push_back(field);
+        }
+        if(!rows.empty()){
+            updated_maze_data.push_back(rows);
+        }
+    }
+    return updated_maze_data;
+};
 
 // Togglet den Info Modus an bzw. aus
 void GameState::toggle_info_mode(){
@@ -60,26 +90,49 @@ void GameState::move_player(const char& direction)
 // Vorbedingung: Wenn das Feld eine Tuer ist, muss mindestens ein Schluessel zur Verfuegung stehen
 void GameState::process_tile_action()
 {
+    check_ghost_collision();
+    
     const int row = player_->get_position()[0];
     const int col = player_->get_position()[1];
 
-    assert(maze_->data()[row][col] != 'T' || player_->has_key(),
+    assert(maze_->data()[row][col] != 'T' || player_->has_key(), // Fehler wenn auf Türfeld und keine Schlüssel
         "process_tile_action(...) assumes enough keys are there when approaching a door.");
 
-    if(maze_->data()[row][col] == 'K')
+    if(maze_->data()[row][col] == 'K') // Schlüssel
     {
         player_->add_key();
         maze_->change_field(row,col,'.');
     }
-    else if(maze_->data()[row][col] == 'T')
+    else if(maze_->data()[row][col] == 'T') // Tür
     {
         player_->use_key();
         maze_->change_field(row,col,'.');
     }
-    else if(maze_->data()[row][col] == 'A')
+    else if(maze_->data()[row][col] == 'A') // Standard Geist
     {
         hit_ghost_ = true;
     }
+}
+
+//Überprüft ob Spieler auf der Position eines dynamischen Geistes ist
+void GameState::check_ghost_collision(){
+    vector<int> player_pos = player_->get_position();
+    
+    //Überprüft alle Bowie Geister
+    for(ghost : bowie_ghosts_){
+        if(ghost->position == player_pos){
+            hit_ghost = true;
+            return;
+        }
+    }
+    //Überprüft alle Conelly Geister
+    for(ghost : conelly_ghosts_){
+        if(ghost->position == player_pos){
+            hit_ghost = true;
+            return;
+        }
+    }
+
 }
 
 // Gibt true zurueck, wenn das Ziel erreicht wurde

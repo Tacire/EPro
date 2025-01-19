@@ -25,7 +25,7 @@ vector<vector<char>> read_maze_data(const int& rows, const int& cols)
     {
         cin >> ch;
         if(!cin) {throw BadMaze {};}
-        if(!(ch == '#' || ch == 'T' || ch == 'A' || ch == '.' || ch == 'K' || ch == 'Z'))
+        if(!(ch == '#' || ch == 'T' || ch == 'A' || ch == '.' || ch == 'K' || ch == 'Z'  || ch == 'B'  || ch == 'C'))
         {
             throw BadMaze {};
         }

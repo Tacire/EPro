@@ -10,7 +10,6 @@ class Player {
         Player(const int& startRow, const int& startColumn);
         Player(const int& startRow, const int& startColumn, const int& numberOfKeys);
 
-        
         bool has_key();
         void add_key();
         bool use_key();

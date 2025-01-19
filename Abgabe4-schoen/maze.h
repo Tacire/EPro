@@ -13,7 +13,7 @@ public:
 
     // Konstruktor, erzeugt Labyrinth basierend auf Parameter
     Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
-    
+
     // Kalkuliert von gegebener Position (rekursiv) die Distanz zum Ziel
     int calculate_shortest_path_to_goal(const vector<int> position, const int steps = 5);
     void change_field(const int row, const int column, const char newField); //Setter Methode für einzelne Felder des Labyrinths
@@ -22,8 +22,8 @@ public:
     int get_rows();
     int get_cols();
 private:
-    int rows_; // Anzahl der Zeilen des Labyrinths
-    int cols_; // Anzahl der Spalten des Labyrinths
+    const int rows_; // Anzahl der Zeilen des Labyrinths
+    const int cols_; // Anzahl der Spalten des Labyrinths
     vector<vector<char>> data_; // Labyrinth-Daten (erst Zeilen dann Spalten)
 
     //================ Hilfsmethoden für Klassenmethoden ============================

@@ -1,14 +1,14 @@
 #include "maze.h"
 
-Maze::Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze){
+Maze::Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze)
+: rows_(maxRows) , cols_(maxColumns){
+
     //Checkt ob das Init-Maze gültig ist
     if(!valid_maze(maxRows,maxColumns,newMaze)){
         throw BadMaze{}; // Wenn Maze fasche größe
+    }else{
+        data_ = newMaze;
     }
-
-    rows_ = maxRows;
-    cols_ = maxColumns;
-    data_ = newMaze;
 }
 
 // Gibt die benoetigte Schritte bis zum Ziel an
