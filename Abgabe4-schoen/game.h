@@ -22,13 +22,13 @@ public:
 
 private:
     //========== Spieler und Labyrinth Instanzen ==========
-    Maze * maze; // Das Labyrinth
-    Player * player; // Spielfigur
+    Maze * maze_; // Das Labyrinth
+    Player * player_; // Spielfigur
 
     //=============== GameState-Variablen =================
     bool hit_ghost_; // Wurde ein Geist getroffen?
-    bool exit; // Wurde 'q' gerdückt?
-    bool info_mode; // Ist der Infomode aktiviert?
+    bool exit_; // Wurde 'q' gerdückt?
+    bool info_mode_; // Ist der Infomode aktiviert?
 
     //=============== Spieler-Management ===================
     void toggle_info_mode();

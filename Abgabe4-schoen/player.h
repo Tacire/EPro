@@ -7,14 +7,20 @@
 // Klasse, die eine SpielerIn kapselt
 class Player {
     public:
-        Player(int startRow, int startColumn);
-        Player(int startRow, int startColumn, int numberOfKeys);
-        bool hasKey();
-        void addKey();
-        bool useKey();
-        vector<int> position; // Aktuelle Position der SpielerIn im Labyrinth
+        Player(const int& startRow, const int& startColumn);
+        Player(const int& startRow, const int& startColumn, const int& numberOfKeys);
+
+        
+        bool has_key();
+        void add_key();
+        bool use_key();
+        
+        void set_position(const vector<int>& position);
+        vector<int> get_position();
+        
     private:
-        int no_keys; // Anzahl der Schlüssel der SpielerIn
+        vector<int> position_; // Aktuelle Position der SpielerIn im Labyrinth
+        int no_keys_; // Anzahl der Schlüssel der SpielerIn
 };
 
 #endif

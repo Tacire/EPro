@@ -9,21 +9,28 @@
 class Maze
 {
 public:
+    static constexpr char valid_fields[] = "ATK.#Z";
+
+    // Konstruktor, erzeugt Labyrinth basierend auf Parameter
     Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
     
+    // Kalkuliert von gegebener Position (rekursiv) die Distanz zum Ziel
     int calculate_shortest_path_to_goal(const vector<int> position, const int steps = 5);
-    void changeField(const int row, const int column, const char newField);
-    bool validField(const char& field);
-    bool validMaze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
-    vector<vector<char>> data();
-
-        
-    int rows; // Anzahl der Zeilen des Labyrinths
-    int cols; // Anzahl der Spalten des Labyrinths
-    static constexpr char validFields[] = "ATK.#Z";
-
+    void change_field(const int row, const int column, const char newField); //Setter Methode für einzelne Felder des Labyrinths
+    
+    vector<vector<char>> data(); // Getter Methode der Labyrinth Daten
+    int get_rows();
+    int get_cols();
 private:
+    int rows_; // Anzahl der Zeilen des Labyrinths
+    int cols_; // Anzahl der Spalten des Labyrinths
     vector<vector<char>> data_; // Labyrinth-Daten (erst Zeilen dann Spalten)
+
+    //================ Hilfsmethoden für Klassenmethoden ============================
+    bool valid_field(const char& field);
+    bool valid_maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
+    //=================================================================================
+    
 };
 
 

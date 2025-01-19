@@ -2,19 +2,19 @@
 
 Maze::Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze){
     //Checkt ob das Init-Maze gültig ist
-    if(!validMaze(maxRows,maxColumns,newMaze)){
+    if(!valid_maze(maxRows,maxColumns,newMaze)){
         throw BadMaze{}; // Wenn Maze fasche größe
     }
 
-    rows = maxRows;
-    cols = maxColumns;
+    rows_ = maxRows;
+    cols_ = maxColumns;
     data_ = newMaze;
 }
 
 // Gibt die benoetigte Schritte bis zum Ziel an
 // nach vorgegebenen Agorithmus
 int Maze::calculate_shortest_path_to_goal(const vector<int> position, const int steps){
-    if(position[0] >= rows || position[0] < 0 || position[1] >= cols || position[1] < 0){
+    if(position[0] >= rows_ || position[0] < 0 || position[1] >= cols_ || position[1] < 0){
         return -1; // Out of Bounds
     }
 
@@ -51,16 +51,16 @@ int Maze::calculate_shortest_path_to_goal(const vector<int> position, const int 
 }
 
 // Überprüft ob der Feldinhalt einem gültigen Feldwert entspricht
-bool Maze::validField(const char& field){
+bool Maze::valid_field(const char& field){
     bool valid = false;
-    for(char validfield : validFields){
+    for(char validfield : valid_fields){
         if(field == validfield){
             valid = true;
         }
     }
     return valid;
 }
-bool Maze::validMaze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze){
+bool Maze::valid_maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze){
     if(newMaze.size() != maxRows){
         return false; // Wenn Vector falsche größe hat
     }
@@ -69,7 +69,7 @@ bool Maze::validMaze(const int& maxRows, const int& maxColumns, const vector<vec
             return false; // Wenn Vector falsche größe
         }
         for(char field : row){
-            if(!validField(field)){
+            if(!valid_field(field)){
                 return false;   //Wenn Feldinhalt nicht gültig ist
             }
         }
@@ -78,10 +78,10 @@ bool Maze::validMaze(const int& maxRows, const int& maxColumns, const vector<vec
 }
 
 
-void Maze::changeField(const int row, const int column, const char newField){
-        if(!validField(newField)){
+void Maze::change_field(const int row, const int column, const char newField){
+        if(!valid_field(newField)){
             throw BadMaze{};
-        }else if(row >= rows || column >= cols){
+        }else if(row >= rows_ || column >= cols_){
             throw BadMaze{};
         }
         
@@ -92,4 +92,12 @@ void Maze::changeField(const int row, const int column, const char newField){
 
 vector<vector<char>> Maze::data(){
     return data_;
+}
+
+int Maze::get_rows(){
+    return rows_;
+}
+
+int Maze::get_cols(){
+    return cols_;
 }

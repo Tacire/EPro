@@ -1,17 +1,17 @@
 #include "game.h"
 
-GameState::GameState(const int& rows, const int& cols, const vector<vector<char>>& labyrinth_data, const int& player_row, const int& player_col){
-    maze = new Maze(rows,cols,labyrinth_data);
-    player = new Player(player_row, player_col);
-    info_mode = false;
+GameState::GameState(const int& rows, const int& cols, const vector<vector<char>>& labyrinth_data, const int& player__row, const int& player__col){
+    maze_ = new Maze(rows,cols,labyrinth_data);
+    player_ = new Player(player__row, player__col);
+    info_mode_ = false;
 }
 
 // Togglet den Info Modus an bzw. aus
 void GameState::toggle_info_mode(){
-    if(info_mode){
-        info_mode = false;
+    if(info_mode_){
+        info_mode_ = false;
     }else{
-       info_mode = true; 
+       info_mode_ = true; 
     }
 }
 
@@ -25,15 +25,15 @@ bool GameState::position_is_walkable(const vector<int>& position)
     {
         return false;
     }
-    if(row >= maze->rows || col >= maze->cols)
+    if(row >= maze_->get_rows() || col >= maze_->get_cols())
     {
         return false;
     }
-    if(maze->data()[row][col] == '#')
+    if(maze_->data()[row][col] == '#')
     {
         return false;
     }
-    if(maze->data()[row][col] == 'T' && (!player->hasKey()))
+    if(maze_->data()[row][col] == 'T' && (!player_->has_key()))
     {
         return false;
     }
@@ -43,14 +43,14 @@ bool GameState::position_is_walkable(const vector<int>& position)
 // Funktion zur Bewegung der SpielerIn
 void GameState::move_player(const char& direction)
 {
-    vector<int> potential_new_position = new_position_by_direction(player->position, direction);
+    vector<int> potential_new_position = new_position_by_direction(player_->get_position(), direction);
 
     if(!position_is_walkable(potential_new_position))
     {
         throw BadMovement {};
     }
 
-    player->position = potential_new_position;
+    player_->set_position(potential_new_position);
     process_tile_action();
 }
 
@@ -58,23 +58,23 @@ void GameState::move_player(const char& direction)
 // Vorbedingung: Wenn das Feld eine Tuer ist, muss mindestens ein Schluessel zur Verfuegung stehen
 void GameState::process_tile_action()
 {
-    const int row = player->position[0];
-    const int col = player->position[1];
+    const int row = player_->get_position()[0];
+    const int col = player_->get_position()[1];
 
-    assert(maze->data()[row][col] != 'T' || player->hasKey(),
+    assert(maze_->data()[row][col] != 'T' || player_->has_key(),
         "process_tile_action(...) assumes enough keys are there when approaching a door.");
 
-    if(maze->data()[row][col] == 'K')
+    if(maze_->data()[row][col] == 'K')
     {
-        player->addKey();
-        maze->changeField(row,col,'.');
+        player_->add_key();
+        maze_->change_field(row,col,'.');
     }
-    else if(maze->data()[row][col] == 'T')
+    else if(maze_->data()[row][col] == 'T')
     {
-        player->useKey();
-        maze->changeField(row,col,'.');
+        player_->use_key();
+        maze_->change_field(row,col,'.');
     }
-    else if(maze->data()[row][col] == 'A')
+    else if(maze_->data()[row][col] == 'A')
     {
         hit_ghost_ = true;
     }
@@ -83,7 +83,7 @@ void GameState::process_tile_action()
 // Gibt true zurueck, wenn das Ziel erreicht wurde
 bool GameState::reached_goal()
 {
-    return maze->data()[player->position[0]][player->position[1]] == 'Z';
+    return maze_->data()[player_->get_position()[0]][player_->get_position()[1]] == 'Z';
 }
 
 
@@ -96,7 +96,7 @@ bool GameState::hit_ghost()
 // Gibt true zurueck gdw. das Spiel zuende ist
 bool GameState::is_end_condition()
 {
-    return reached_goal() || hit_ghost() || exit;
+    return reached_goal() || hit_ghost() || exit_;
 }
 
 
@@ -104,8 +104,8 @@ bool GameState::is_end_condition()
 // Vorbedingung: direction muss aus {w, s, a, d} kommen.
 vector<int> GameState::new_position_by_direction(const vector<int>& player_position, const char& direction)
 {
-    const int row = player->position[0];
-    const int col = player->position[1];
+    const int row = player_->get_position()[0];
+    const int col = player_->get_position()[1];
 
     switch(direction)
     {
@@ -144,7 +144,7 @@ void GameState::process_input(const char input)
             display_help();
             return;
         case 'q':
-            exit = true;
+            exit_ = true;
             return;
         default:
             throw UnknownInput{};
@@ -156,27 +156,27 @@ void GameState::process_input(const char input)
 // Funktion zur Anzeige des Spielfeldes
 void GameState::display_maze()
 {
-    const int player_row = player->position[0];
-    const int player_col = player->position[1];
+    const int player__row = player_->get_position()[0];
+    const int player__col = player_->get_position()[1];
 
     //cout << "\033[H\033[J"; // ANSI Escape Code zum Loeschen des Bildschirms
-    for(int i = 0; i < maze->rows; i++)
+    for(int i = 0; i < maze_->get_rows(); i++)
     {
-        for(int j = 0; j < maze->cols; j++)
+        for(int j = 0; j < maze_->get_cols(); j++)
         {
-            if(i == player_row && j == player_col)
+            if(i == player__row && j == player__col)
             {
                 cout << 'S';
             }
             else
             {
-                cout << maze->data()[i][j];
+                cout << maze_->data()[i][j];
             }
             cout << " ";
         }
         // Printet Infomode nach der ersten Zeile falls aktiviert
-        if(info_mode && (i == 0)){
-            int distance = maze->calculate_shortest_path_to_goal(player->position);
+        if(info_mode_ && (i == 0)){
+            int distance = maze_->calculate_shortest_path_to_goal(player_->get_position());
             if(distance != -1){ // Für den Fall Unendlich (d.h distanz zu groß bzw. unmöglich)
                 if(distance == 1){ //Gramatikalischer Sonderfall, relevant für automatische Tests
                     cout << distance << " Schritt bis zum Ziel";
@@ -196,7 +196,7 @@ void GameState::game_loop()
     char input;
     while(cin && !is_end_condition())
     {
-  /**      assert(game_state.player.hasKey >= 0,
+  /**      assert(game_state.player_.hasKey >= 0,
             "Player has a negative number of keys.");
     */
         display_maze();
