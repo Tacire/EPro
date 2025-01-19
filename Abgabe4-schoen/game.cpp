@@ -206,7 +206,7 @@ void GameState::move_ghosts(){
                         }else{
                             ghost->set_position({ghost_row,ghost_col+1}); // Bewege nach rechts um dem Hinderniss auszuweichen
                         }
-                    }else if{col_diff > 0}{
+                    }else if(col_diff > 0){
                         if(maze_->check_wall(ghost_row,ghost_col-1)){
                             continue; //eingesperrt
                         }else{
@@ -221,7 +221,7 @@ void GameState::move_ghosts(){
             }else{
                 continue; //selbes Feld wie Spieler
             }
-        else{  //Sonst Spaltenabstand verringern
+        }else{  //Sonst Spaltenabstand verringern
             if(right){
                 if(maze_->check_wall(ghost_row,ghost_col+1)){
                     if(down){
@@ -268,8 +268,7 @@ void GameState::move_ghosts(){
         }    
     }
     
-    
-
+    //Überprüft nach den Bewegungen erneut Kollision
     check_ghost_collision();
 }
 
@@ -400,6 +399,7 @@ void GameState::game_loop()
             try
             {
                 process_input(input);
+                move_ghosts();
             }
             catch(BadMovement&)
             {

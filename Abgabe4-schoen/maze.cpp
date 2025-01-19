@@ -61,6 +61,7 @@ bool Maze::check_wall(const int& row, const int& column){
                 break;
             default:
                 return false;
+        }
     }else{
         return true;
     }

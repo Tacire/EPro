@@ -29,7 +29,7 @@ private:
     vector<vector<char>> data_; // Labyrinth-Daten (erst Zeilen dann Spalten)
 
     //================ Hilfsmethoden für Klassenmethoden ============================
-    bool inbounds(const vector<int> position);
+    bool inbounds(const int& row, const int& column);
     bool valid_field(const char& field);
     bool valid_maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
     //=================================================================================
