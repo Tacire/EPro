@@ -1,8 +1,9 @@
 #include "game.h"
 
-GameState::GameState(int& rows, int& cols, vector<vector<char>>& labyrinth_data, int& player_row, int& player_col){
+GameState::GameState(const int& rows, const int& cols, const vector<vector<char>>& labyrinth_data, const int& player_row, const int& player_col){
     maze = new Maze(rows,cols,labyrinth_data);
     player = new Player(player_row, player_col);
+    info_mode = false;
 }
 
 // Togglet den Info Modus an bzw. aus
@@ -15,7 +16,7 @@ void GameState::toggle_info_mode(){
 }
 
 // Gibt true zurueck gdw. die Position begehbar ist
-bool GameState::position_is_walkable(vector<int>& position)
+bool GameState::position_is_walkable(const vector<int>& position)
 {
     const int row = position[0];
     const int col = position[1];
@@ -40,7 +41,7 @@ bool GameState::position_is_walkable(vector<int>& position)
 }
 
 // Funktion zur Bewegung der SpielerIn
-void GameState::move_player(char& direction)
+void GameState::move_player(const char& direction)
 {
     vector<int> potential_new_position = new_position_by_direction(player->position, direction);
 
@@ -66,12 +67,12 @@ void GameState::process_tile_action()
     if(maze->data()[row][col] == 'K')
     {
         player->addKey();
-        maze->data()[row][col] = '.';
+        maze->changeField(row,col,'.');
     }
     else if(maze->data()[row][col] == 'T')
     {
         player->useKey();
-        maze->data()[row][col] = '.';
+        maze->changeField(row,col,'.');
     }
     else if(maze->data()[row][col] == 'A')
     {
@@ -101,7 +102,7 @@ bool GameState::is_end_condition()
 
 // Funktion zur Umrechnung eines Kommandos zu einer neuen Position
 // Vorbedingung: direction muss aus {w, s, a, d} kommen.
-vector<int> GameState::new_position_by_direction(vector<int>& player_position, char& direction)
+vector<int> GameState::new_position_by_direction(const vector<int>& player_position, const char& direction)
 {
     const int row = player->position[0];
     const int col = player->position[1];
@@ -125,7 +126,7 @@ vector<int> GameState::new_position_by_direction(vector<int>& player_position, c
 
 // Reagiert auf das eingegebene Kommando und gibt an die jeweilige Funktion
 // ab, die sich um genau dieses Kommando kuemmert.
-void GameState::process_input(char input)
+void GameState::process_input(const char input)
 {
     switch(input)
     {

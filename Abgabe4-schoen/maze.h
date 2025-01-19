@@ -9,12 +9,12 @@
 class Maze
 {
 public:
-    Maze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze);
+    Maze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
     
-    int calculate_shortest_path_to_goal(vector<int> position, int steps = 5);
-    void changeField(int& row, int& column, char& newField);
-    bool validField(char& field);
-    bool validMaze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze);
+    int calculate_shortest_path_to_goal(const vector<int> position, const int steps = 5);
+    void changeField(const int row, const int column, const char newField);
+    bool validField(const char& field);
+    bool validMaze(const int& maxRows, const int& maxColumns, const vector<vector<char>>& newMaze);
     vector<vector<char>> data();
 
         

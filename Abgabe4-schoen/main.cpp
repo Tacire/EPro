@@ -17,7 +17,7 @@ int read_int()
 
 // Liest die Labyrinth-Daten ein.
 // Vorbedingung: cin ist ok.
-vector<vector<char>> read_maze_data(int& rows, int& cols)
+vector<vector<char>> read_maze_data(const int& rows, const int& cols)
 {
     vector<vector<char>> maze_data(rows);
     char ch;
@@ -78,6 +78,7 @@ int main()
 
         if(game_state->reached_goal())
         {
+            game_state->display_maze(); //Notwendig für automatische Tests
             cout << "Ziel erreicht! Herzlichen Glueckwunsch!\n";
         }
         else if(game_state->hit_ghost())
@@ -95,9 +96,9 @@ int main()
         cout << "Fehler beim Einlesen des Labyrinths.\n";
         return 1;
     }
-/**    catch(...)
+    catch(...)
     {
         cout << "Unbekannter Fehler!\n";
         return 1;
-    } */
+    }
 }
