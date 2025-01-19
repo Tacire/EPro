@@ -1,3 +1,5 @@
+// Interface zum Spiel. Initialisiert das Spiel, behandelt Fehler und beendet es.
+
 #include "game.h"
 #include "helper.h"
 
@@ -76,7 +78,6 @@ int main()
 
         if(game_state->reached_goal())
         {
-            game_state->display_maze();
             cout << "Ziel erreicht! Herzlichen Glueckwunsch!\n";
         }
         else if(game_state->hit_ghost())

@@ -12,26 +12,33 @@ class GameState
 {
 public:
     GameState(int& rows, int& cols, vector<vector<char>>& labyrinth_data, int& player_row, int& player_col);
-    void toggle_info_mode();
-    void process_tile_action();
-    bool position_is_walkable(vector<int>& position);
-    void move_player(char& direction);
+    
+    //Öffentliche Methoden fürs Interface
+    void game_loop();
     bool reached_goal();
     bool hit_ghost();
-    bool is_end_condition();
-    vector<int> new_position_by_direction(vector<int>& player_position, char& direction);
-    void display_help();
-    void game_loop();
-    void display_maze();
-    void process_input(char input);
 
+private:
     Maze *maze; // Das Labyrinth
     Player *player; // Die 
+
+    bool hit_ghost_; // Wurde ein Geist getroffen?
     bool exit; // Wurde 'q' gerdückt?
     bool info_mode; // Ist der Infomode aktiviert?
 
-private:
-    bool hit_ghost_; // Wurde ein Geist getroffen?
+    // Spieler-Management
+    void toggle_info_mode();
+    void display_help();
+    void process_input(char input);
+    void display_maze();
+
+    // Spiel-Methoden
+    bool position_is_walkable(vector<int>& position);
+    vector<int> new_position_by_direction(vector<int>& player_position, char& direction);
+    void move_player(char& direction);
+    void process_tile_action();
+    bool is_end_condition();
+
 };
 
 #endif
