@@ -30,6 +30,9 @@ bool Player::use_key(){
 }
 
 void Player::set_position(const vector<int>& position){
+    if(position.size() != 2){
+        throw BadMovement{};
+    }
     position_ = position;
 };
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "std_lib_inc.h"
+#include "helper.h"
 
 // Klasse, die eine SpielerIn kapselt
 class Player {

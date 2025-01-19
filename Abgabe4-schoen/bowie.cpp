@@ -6,6 +6,9 @@ Bowie::Bowie(const int& startRow, const int& startColumn){
 }
 
 void Bowie::set_position(const vector<int>& position){
+    if(position.size() != 2){
+        throw BadMovement{};
+    }
     position_ = position;
 };
 

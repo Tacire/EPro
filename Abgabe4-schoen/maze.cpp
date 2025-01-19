@@ -50,6 +50,31 @@ int Maze::calculate_shortest_path_to_goal(const vector<int> position, const int 
     }
 }
 
+void Maze::check_wall(const int& row, const int& column){
+    if(inbounds(row,column)){
+        switch(data_[row][column]){
+            case '#':
+                return true;
+                break;
+            case 'T':
+                return true;
+                break;
+            default:
+                return false;
+    }else{
+        return true;
+    }
+}
+
+//Überprüft ob Feld innerhalb des Labyrinths liet
+bool Maze::inbounds(const int& row, const int& column){
+    if(row >= rows_ || row < 0 || column >= cols_ || column < 0){
+        return false;
+    }else{
+        return true;
+    }
+}
+
 // Überprüft ob der Feldinhalt einem gültigen Feldwert entspricht
 bool Maze::valid_field(const char& field){
     bool valid = false;
@@ -81,7 +106,7 @@ bool Maze::valid_maze(const int& maxRows, const int& maxColumns, const vector<ve
 void Maze::change_field(const int row, const int column, const char newField){
         if(!valid_field(newField)){
             throw BadMaze{};
-        }else if(row >= rows_ || column >= cols_){
+        }else if(!inbounds(row,column)){
             throw BadMaze{};
         }
         

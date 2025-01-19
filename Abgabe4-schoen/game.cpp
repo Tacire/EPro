@@ -119,20 +119,98 @@ void GameState::check_ghost_collision(){
     vector<int> player_pos = player_->get_position();
     
     //Überprüft alle Bowie Geister
-    for(ghost : bowie_ghosts_){
-        if(ghost->position == player_pos){
-            hit_ghost = true;
+    for(Bowie* ghost : bowie_ghosts_){
+        if(ghost->get_position() == player_pos){
+            hit_ghost_ = true;
             return;
         }
     }
     //Überprüft alle Conelly Geister
-    for(ghost : conelly_ghosts_){
-        if(ghost->position == player_pos){
-            hit_ghost = true;
+    for(Conelly* ghost : conelly_ghosts_){
+        if(ghost->get_position() == player_pos){
+            hit_ghost_ = true;
             return;
         }
     }
 
+}
+
+void GameState::move_ghosts(){
+    const maze_data = maze_->data();
+
+    //Bewegung von Bowie Geistern
+    for(Bowie* ghost : bowie_ghosts_){
+        vector<int> pos = ghost->get_position();
+        if(ghost->moving_left()){
+            if(!(maze_->check_wall(pos[0],pos[1]-1))){     // Wenn links keine Wand Tür oder Spielfeldrand
+                ghost->set_position({pos[0],pos[1]-1});    // Bewege in die Richtung
+            }else{                                         // sonst
+                if(maze_check_wall(pos[0],pos[1]+1)){      // Falls rechts auch Wand
+                    continue;                              // Tu nichts
+                }else{                                     // sonst
+                    ghost->change_direction();             // ändere Richtung
+                    ghost->set_position({pos[0],pos[1]+1}) // und lauf nach rechts
+                }
+            }
+        }else{
+            if(!(maze_->check_wall(pos[0],pos[1]+1))){     // Wenn rechts keine Wand Tür oder Spielfeldrand
+                ghost->set_position({pos[0],pos[1]+1});    // Bewege in die Richtung
+            }else{                                         // sonst
+                if(maze_check_wall(pos[0],pos[1]-1)){      // Falls links auch Wand
+                    continue;                              // Tu nichts
+                }else{                                     // sonst
+                    ghost->change_direction();             // ändere Richtung
+                    ghost->set_position({pos[0],pos[1]-1}) // und lauf nach links
+                }
+            }
+        }
+    }
+    
+    //Bewegung von Conelly Geistern
+    const int p_row = player_->get_position()[0];
+    const int p_col = player_->get_position()[1];
+    for(Conelly* ghost : conelly_ghosts_){
+        const int ghost_row = ghost->get_position()[0];
+        const int ghost_col = ghost->get_position()[1];
+
+        const int row_diff = (p_row < ghost_row) ? ghost_row - p_row : p_row - ghost_row; //Fancy Schreibweise von ziehe die kleinere Zahl der größeren ab
+        const int col_diff = (p_col < chost_col) ? ghost_col - p_col : p_col - ghost_col;
+        const bool down = player_pos[0]>ghost_pos[0];
+        const bool right = player_pos[1]>ghost_pos[1];
+
+        // Künstiche Intelligenz - aber sowas von
+        if(row_diff >= col_diff){  //Zuerst Zeilenabstand verringern
+            if(down){
+                if(check_wall(ghost_row+1,ghost_col)){
+                    if(right){
+                        if(check_wall(ghost_row,ghost_col+1)){
+                            //eingesperrt
+                            continue;
+                        }else{
+                            ghost->set_position(ghost_row,ghost_col+1);
+                        }
+                    }else if{col_diff > 0}{
+                        if(check_wall(ghost_row,ghost_col+1)){
+                            //eingesperrt
+                            continue;
+                        }
+                    }
+                }
+            }else if(row_diff > 0){
+
+            }
+        else{  //Sonst Spaltenabstand verringern
+            if(right){
+
+            }else if(col_diff > 0){
+
+            }
+        }    
+    }
+    
+    
+
+    check_ghost_collision();
 }
 
 // Gibt true zurueck, wenn das Ziel erreicht wurde

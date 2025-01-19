@@ -46,6 +46,7 @@ private:
     vector<int> new_position_by_direction(const vector<int>& player_position, const char& direction);
     void move_player(const char& direction);
     void process_tile_action();
+    void move_ghosts();
     bool is_end_condition();
     //======================================================
 };
