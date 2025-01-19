@@ -50,7 +50,7 @@ int Maze::calculate_shortest_path_to_goal(const vector<int> position, const int 
     }
 }
 
-void Maze::check_wall(const int& row, const int& column){
+bool Maze::check_wall(const int& row, const int& column){
     if(inbounds(row,column)){
         switch(data_[row][column]){
             case '#':

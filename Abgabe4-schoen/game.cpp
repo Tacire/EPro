@@ -136,8 +136,6 @@ void GameState::check_ghost_collision(){
 }
 
 void GameState::move_ghosts(){
-    const maze_data = maze_->data();
-
     //Bewegung von Bowie Geistern
     for(Bowie* ghost : bowie_ghosts_){
         vector<int> pos = ghost->get_position();
@@ -145,22 +143,22 @@ void GameState::move_ghosts(){
             if(!(maze_->check_wall(pos[0],pos[1]-1))){     // Wenn links keine Wand Tür oder Spielfeldrand
                 ghost->set_position({pos[0],pos[1]-1});    // Bewege in die Richtung
             }else{                                         // sonst
-                if(maze_check_wall(pos[0],pos[1]+1)){      // Falls rechts auch Wand
+                if(maze_->check_wall(pos[0],pos[1]+1)){      // Falls rechts auch Wand
                     continue;                              // Tu nichts
                 }else{                                     // sonst
                     ghost->change_direction();             // ändere Richtung
-                    ghost->set_position({pos[0],pos[1]+1}) // und lauf nach rechts
+                    ghost->set_position({pos[0],pos[1]+1}); // und lauf nach rechts
                 }
             }
         }else{
             if(!(maze_->check_wall(pos[0],pos[1]+1))){     // Wenn rechts keine Wand Tür oder Spielfeldrand
                 ghost->set_position({pos[0],pos[1]+1});    // Bewege in die Richtung
             }else{                                         // sonst
-                if(maze_check_wall(pos[0],pos[1]-1)){      // Falls links auch Wand
+                if(maze_->check_wall(pos[0],pos[1]-1)){      // Falls links auch Wand
                     continue;                              // Tu nichts
                 }else{                                     // sonst
                     ghost->change_direction();             // ändere Richtung
-                    ghost->set_position({pos[0],pos[1]-1}) // und lauf nach links
+                    ghost->set_position({pos[0],pos[1]-1}); // und lauf nach links
                 }
             }
         }
@@ -174,36 +172,98 @@ void GameState::move_ghosts(){
         const int ghost_col = ghost->get_position()[1];
 
         const int row_diff = (p_row < ghost_row) ? ghost_row - p_row : p_row - ghost_row; //Fancy Schreibweise von ziehe die kleinere Zahl der größeren ab
-        const int col_diff = (p_col < chost_col) ? ghost_col - p_col : p_col - ghost_col;
-        const bool down = player_pos[0]>ghost_pos[0];
-        const bool right = player_pos[1]>ghost_pos[1];
+        const int col_diff = (p_col < ghost_col) ? ghost_col - p_col : p_col - ghost_col;
+        const bool down = p_row > ghost_row;
+        const bool right = p_col > ghost_col;
 
-        // Künstiche Intelligenz - aber sowas von
+        // ================================== Künstiche Intelligenz - aber sowas von ===============================
         if(row_diff >= col_diff){  //Zuerst Zeilenabstand verringern
             if(down){
-                if(check_wall(ghost_row+1,ghost_col)){
+                if(maze_->check_wall(ghost_row+1,ghost_col)){
                     if(right){
-                        if(check_wall(ghost_row,ghost_col+1)){
-                            //eingesperrt
-                            continue;
+                        if(maze_->check_wall(ghost_row,ghost_col+1)){
+                            continue; //eingesperrt
                         }else{
-                            ghost->set_position(ghost_row,ghost_col+1);
+                            ghost->set_position({ghost_row,ghost_col+1}); // Bewege nach rechts um dem Hinderniss auszuweichen
                         }
-                    }else if{col_diff > 0}{
-                        if(check_wall(ghost_row,ghost_col+1)){
-                            //eingesperrt
-                            continue;
+                    }else if(col_diff > 0){
+                        if(maze_->check_wall(ghost_row,ghost_col-1)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row,ghost_col-1}); // Bewege nach links um dem Hinderniss auszuweichen
                         }
+                    }else{
+                        continue; //Wand im Weg - selbe Spalte
                     }
+                }else{
+                    ghost->set_position({ghost_row+1,ghost_col}); // Nach unten ist alles frei
                 }
             }else if(row_diff > 0){
-
+                if(maze_->check_wall(ghost_row-1,ghost_col)){
+                    if(right){
+                        if(maze_->check_wall(ghost_row,ghost_col+1)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row,ghost_col+1}); // Bewege nach rechts um dem Hinderniss auszuweichen
+                        }
+                    }else if{col_diff > 0}{
+                        if(maze_->check_wall(ghost_row,ghost_col-1)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row,ghost_col-1}); // Bewege nach links um dem Hinderniss auszuweichen
+                        }
+                    }else{
+                        continue; //Wand im Weg - selbe Spalte
+                    }
+                }else{
+                    ghost->set_position({ghost_row-1,ghost_col}); // Nach oben ist alles frei
+                }
+            }else{
+                continue; //selbes Feld wie Spieler
             }
         else{  //Sonst Spaltenabstand verringern
             if(right){
-
+                if(maze_->check_wall(ghost_row,ghost_col+1)){
+                    if(down){
+                        if(maze_->check_wall(ghost_row+1,ghost_col)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row+1,ghost_col});
+                        }
+                    }else if(row_diff > 0){
+                        if(maze_->check_wall(ghost_row-1,ghost_col)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row-1,ghost_col});
+                        }
+                    }else{
+                        continue; //Wand im Weg
+                    }
+                }else{
+                    ghost->set_position({ghost_row,ghost_col+1});
+                }
             }else if(col_diff > 0){
-
+                if(maze_->check_wall(ghost_row,ghost_col-1)){
+                    if(down){
+                        if(maze_->check_wall(ghost_row+1,ghost_col)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row+1,ghost_col});
+                        }
+                    }else if(row_diff > 0){
+                        if(maze_->check_wall(ghost_row-1,ghost_col)){
+                            continue; //eingesperrt
+                        }else{
+                            ghost->set_position({ghost_row-1,ghost_col});
+                        }
+                    }else{
+                        continue; //Wand im Weg
+                    }
+                }else {
+                    ghost->set_position({ghost_row,ghost_col-1});
+                }
+            }else{
+                continue; // Selbes Feld wie Spieler. Sollte nicht auftreten
             }
         }    
     }
