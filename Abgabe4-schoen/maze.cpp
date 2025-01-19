@@ -14,11 +14,11 @@ Maze::Maze(int& maxRows, int& maxColumns, vector<vector<char>>& newMaze){
 // Gibt die benoetigte Schritte bis zum Ziel an
 // nach vorgegebenen Agorithmus
 int Maze::calculate_shortest_path_to_goal(vector<int> position, int steps){
-    if(position[0] >= rows && position[1] >= cols ){
+    if(position[0] >= rows || position[0] < 0 || position[1] >= cols || position[1] < 0){
         return -1; // Out of Bounds
     }
-    char field = data_[position[0]][position[1]];
 
+    char field = data_[position[0]][position[1]];
     if(field == 'Z'){ // Ziel erreicht
         return 0;
     }else if(steps == 0){ // Schrittlimit erreicht

@@ -20,7 +20,11 @@ public:
     bool hit_ghost();
     bool is_end_condition();
     vector<int> new_position_by_direction(vector<int>& player_position, char& direction);
-    
+    void display_help();
+    void game_loop();
+    void display_maze();
+    void process_input(char input);
+
     Maze *maze; // Das Labyrinth
     Player *player; // Die 
     bool exit; // Wurde 'q' gerdückt?

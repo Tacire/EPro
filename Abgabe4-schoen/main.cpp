@@ -1,6 +1,7 @@
 #include "game.h"
 #include "helper.h"
 
+//===================Initialisierung===============================
 
 // Liest ein integer von der Eingabe.
 // Vorbedingung: cin ist in Ordnung
@@ -62,121 +63,7 @@ GameState* initialize()
     return game;
 }
 
-// Gibt eine kurze Hilfe aus
-void display_help()
-{
-    cout << "Willkommen zum Labyrinth-Spiel!\n";
-    cout << "Ziel des Spiels: Finden Sie den Weg vom Startpunkt (S) zum Ziel (Z).\n";
-    cout << "Spielfeld-Erklaerung:\n";
-    cout << "S - Startpunkt: Hier beginnt die SpielerIn.\n";
-    cout << "Z - Ziel: Erreichen Sie diesen Punkt, um das Spiel zu gewinnen.\n";
-    cout << "# - Wand: Diese Felder sind nicht begehbar.\n";
-    cout << "K - Schluessel: Hier können Sie einen Schluessel aufsammeln, um eine Tuer zu oeffnen.\n";
-    cout << "T - Tuer: Unbegehbares Feld, ausser, Sie haben einen Schluessel. Beim Durchschreiten wird ein Schluessel verbraucht.\n";
-    cout << "A - Geist: Ein Geist im Labyrinth. Stehen die SpielerIn auf dem selben Feld, verlieren Sie das Spiel!\n";
-    cout << ". - Leeres Feld: Diese Felder koennen betreten werden.\n";
-    cout << "\nSteuerung:\n";
-    cout << "w - Nach oben bewegen\n";
-    cout << "a - Nach links bewegen\n";
-    cout << "s - Nach unten bewegen\n";
-    cout << "d - Nach rechts bewegen\n";
-    cout << "q - Spiel beenden\n";
-    cout << "Nach jeder Befehlseingabe muss die Eingabetaste (Enter) gedrueckt werden, um sich zu bewegen.\n";
-    cout << "\nViel Erfolg im Labyrinth!\n";
-}
-
-// Reagiert auf das eingegebene Kommando und gibt an die jeweilige Funktion
-// ab, die sich um genau dieses Kommando kuemmert.
-void process_input(GameState* game_state, char input)
-{
-    switch(input)
-    {
-        case 'w':
-        case 's':
-        case 'a':
-        case 'd':
-            game_state->move_player(input);
-            return;
-        case 'i':
-            game_state->toggle_info_mode();
-            return;
-        case 'h':
-        case 'H':
-            display_help();
-            return;
-        case 'q':
-            game_state->exit = true;
-            return;
-        default:
-            throw UnknownInput{};
-    }
-    return;
-}
-
-
-// Funktion zur Anzeige des Spielfeldes
-void display_maze(GameState* game_state)
-{
-    const int player_row = game_state->player->position[0];
-    const int player_col = game_state->player->position[1];
-
-    //cout << "\033[H\033[J"; // ANSI Escape Code zum Loeschen des Bildschirms
-    for(int i = 0; i < game_state->maze->rows; i++)
-    {
-        for(int j = 0; j < game_state->maze->cols; j++)
-        {
-            if(i == player_row && j == player_col)
-            {
-                cout << 'S';
-            }
-            else
-            {
-                cout << game_state->maze->data()[i][j];
-            }
-            cout << " ";
-        }
-        // Printet Infomode nach der ersten Zeile falls aktiviert
-        if(game_state->info_mode && (i == 0)){
-            if(game_state->maze->calculate_shortest_path_to_goal(game_state->player->position) != -1){
-                cout << game_state->maze->calculate_shortest_path_to_goal(game_state->player->position) << " Schritte bis zum Ziel";
-            }
-        };
-        cout << '\n';
-    }
-}
-
-
-// Die Hauptschleife des Spiels
-void game_loop(GameState* game_state)
-{
-    char input;
-    while(cin && !game_state->is_end_condition())
-    {
-  /**      assert(game_state.player.hasKey >= 0,
-            "Player has a negative number of keys.");
-    */
-        display_maze(game_state);
-
-        cin >> input;
-        if(cin)
-        {
-            try
-            {
-                process_input(game_state, input);
-            }
-            catch(BadMovement&)
-            {
-                cout << "Bewegung nicht moeglich!\n";
-            }
-            catch(UnknownInput&)
-            {
-                cout << "Diese Eingabe kenne ich nicht. Gib 'h' ein, um eine Hilfe zu erhalten.\n";
-            }
-        }
-    }
-}
-
-
+//==================================================================
 
 int main()
 {
@@ -185,11 +72,11 @@ int main()
     {
         GameState* game_state = initialize();
 
-        game_loop(game_state);
+        game_state->game_loop();
 
         if(game_state->reached_goal())
         {
-            display_maze(game_state);
+            game_state->display_maze();
             cout << "Ziel erreicht! Herzlichen Glueckwunsch!\n";
         }
         else if(game_state->hit_ghost())
@@ -207,9 +94,9 @@ int main()
         cout << "Fehler beim Einlesen des Labyrinths.\n";
         return 1;
     }
-    catch(...)
+/**    catch(...)
     {
         cout << "Unbekannter Fehler!\n";
         return 1;
-    }
+    } */
 }
