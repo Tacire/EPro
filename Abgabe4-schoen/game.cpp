@@ -4,6 +4,8 @@ GameState::GameState(const int& rows, const int& cols, const vector<vector<char>
     maze_ = new Maze(rows,cols,labyrinth_data);
     player_ = new Player(player__row, player__col);
     info_mode_ = false;
+    exit_ = false;
+    hit_ghost_ = false;
 }
 
 // Togglet den Info Modus an bzw. aus
