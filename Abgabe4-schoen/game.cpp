@@ -356,14 +356,31 @@ void GameState::display_maze()
     {
         for(int j = 0; j < maze_->get_cols(); j++)
         {
-            if(i == player__row && j == player__col)
-            {
-                cout << 'S';
+            char char_to_print = '.'; // default wert, wird überschrieben
+
+            for(Bowie* bowie_ghost : bowie_ghosts_){
+                if(bowie_ghost->get_position()[0] == i && bowie_ghost->get_position()[1] == j){
+                    char_to_print = 'A';
+                }
             }
-            else
-            {
-                cout << maze_->data()[i][j];
+
+            for(Conelly* conelly_ghost : conelly_ghosts_){
+                if(conelly_ghost->get_position()[0] == i && conelly_ghost->get_position()[1] == j){
+                    char_to_print = 'A';
+                }
             }
+
+
+            if((i == player__row && j == player__col) && char_to_print != 'A')
+            {
+                char_to_print = 'S';
+            }
+            else if(char_to_print != 'A')
+            {
+                char_to_print = maze_->data()[i][j];
+            }
+
+            cout << char_to_print;
             cout << " ";
         }
         // Printet Infomode nach der ersten Zeile falls aktiviert
