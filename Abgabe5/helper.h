@@ -5,7 +5,7 @@
 class CantOpen {};
 
 // Exception fuer unbekannte Eingaben
-class UnknownFormat {};
+class BadFormat {};
 
 // Exception fuer eine falsche Labyrinth-Eingabe
 class CantWrite {};

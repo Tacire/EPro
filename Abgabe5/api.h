@@ -54,5 +54,9 @@ class API{
       string read_string(istream& is);
       vector<unsigned int> read_vector(istream& is);
       string read_enclosed_string(istream& is, char terminator);
+
+      const string task_header = "[tasks]";
+      const string user_header = "[users]";
+      const string assignment_header = "[assignments]";
 }
 #endif

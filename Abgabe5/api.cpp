@@ -17,57 +17,82 @@ void API::read_data(const string &file_name){
     if(!eingabe_stream) {
         throw CantOpen("Datei kann nicht geöffnet werden: " + file_name);
     }
-    read_tasks(eingabe_stream);
-    read_users(eingabe_stream);
-    read_assignemnts(eingabe_stream);
+
+    string header = read_header(eingabe_stream);
+    for(int i = 0; i<3; ++i){
+        if(eingabe_stream.eof() && !eingabe_stream.bad()){
+            return;
+        }else if(eingabe_stream.fail() || eingabe_stream.bad()){
+            throw BadFormat("Datei hat falsches Format");
+        }else{
+            switch(header){
+                case user_header:
+                    read_user;
+                    break;
+                case task_header:
+                    read_tasks
+                    break;
+                case assignment_header:
+                    read_assignemnts;
+                    break;
+                default:
+                    throw BadFormat("Datei hat falsches Format");
+            }
+        }
+        header = read_header(eingabe_stream);
+    }
 }
 
 /**
  * Liest den Task-Abschnitt der Assignment-Verwaltungsdatei
  */
-void API::read_tasks(ifstream &eingabe_stream){
-    istream& operator>>(istream& eingabe_stream, task& task_entry)
-    {
-        task 
-        eingabe_stream >> id;
-        if(!eingabe_stream.good()) { return is; }
-        content = read_enclosed_string(is, '"');
-        if(!eingabe_stream.good()) { return is; }
-        eingabe_stream >> count;
-        if(eingabe_stream.fail() || is.bad()) { return is; }
-        phrase = Phrase{id, content, count};
-        return eingabe_stream;
-    }
-    
-    
-    char ch;
-    eingabe_stream.get(ch);
-    while(!eingabe_stream.eof && !eingabe_stream.bad && !eingabe_stream.fail){
-        
+void API::read_tasks(ifstream &eingabe_stream){  
+    read_tasks(eingabe_stream);
+    read_users(eingabe_stream);
+    read_assignemnts(eingabe_stream);
 
+    while(!eingabe_stream.eof && !eingabe_stream.bad && !eingabe_stream.fail){
     }
+    if(!eingabe_stream.good()) { return is; }
+    if(eingabe_stream.fail() || is.bad()) { return is; }
+    
 }
 
 /**
  * Liest den User-Abschnitt der Assignment-Verwaltungsdatei
  */
 void API::read_users(ifstream &eingabe_stream){
-
 }
 
 /**
  * Liest den Assignment-Abschnitt der Assignment-Verwaltungsdatei
  */
 void API::read_assignemnts(ifstream &eingabe_stream){
-    
+    header = read_string(eingabe_stream);
+}
+
+/**
+ * Sucht den nächsten Header und gibt diesen zurück
+ */
+string API::read_header(istream& is){
+    char ch;
+    string header;
+    cin >> ch;
+    if(is.good() && ch == '['){
+        header = '['+ read_string();
+    }
+    if(is.fail() || is.bad()){
+        return "";
+    }else{
+        return header;
+    }
 }
 
 /**
  * Liest einen String aus dem Stream
  * Basiert auf Vorlesungsbeispiel
  */
-string API::read_string(istream& is)
-{
+string API::read_string(istream& is){
     char ch; string result;
     is.get(ch);
     while(is.good() && !isspace(ch))
@@ -83,8 +108,7 @@ string API::read_string(istream& is)
  * Liest einen enclosed String aus dem Stream
  * Basiert auf Vorlesungsbeispiel
  */
-string API::read_enclosed_string(istream& is, char terminator)
-{
+string API::read_enclosed_string(istream& is, char terminator){
     char ch; string result;
     is.get(ch);
     //Wenn der Stream nicht ok ist, oder der String nicht mit Terminator beginnt
@@ -110,27 +134,34 @@ string API::read_enclosed_string(istream& is, char terminator)
  * Sonst wird ein Fehlerbit gesetzt und ein leerer Vektor returned
  */
 vector<unsigned int> read_vector(istream& is){
-    vector<unsigned int> result;
+    vector<unsigned int> result = {};
     unsigned int entry;
     char seperator;
-    is >> entry;
+    is >> entry >> noskipws;
     while(is.good())
     {
         result.push_back(entry);
-        is.get(seperator);
-        if(seperator != " "){
-            is.setstate(ios_base::failbit);
-        }else if(seperator == '\n'){
+        is >> seperator;
+        if(seperator == '\n'){ //Bei Zeilenumbruch wird result returned
+            is >> skipws;
             return result;
-        }
+        }else if(seperator != " "){
+            is.setstate(ios_base::failbit);
+            is >> skipws;
+            return {};
+        }else 
 
         is >> entry;
     }
+    is >> seperator; // Falls die Schleife nicht betreten wird(keine Zahl lesbar)
+    if(seperator == '\n'){ // Fall Zeilenumsprung -> Der Vektor ist einfach leer
+        is.clear(); // Stream wird wieder auf good gesetzt. Korrektes Verhalten
+    }
+    is >> skipw;
     return {};
 }
 
-istream& operator>>(istream& eingabe_stream, User& user)
-{
+istream& operator>>(istream& eingabe_stream, User& user){
     unsigned int u_id; string name; string surname;
     eingabe_stream >> u_id;
     if(!eingabe_stream.good()) { return eingabe_stream; }
@@ -142,8 +173,7 @@ istream& operator>>(istream& eingabe_stream, User& user)
     return eingabe_stream;
 }
 
-istream& operator>>(istream& eingabe_stream, Task& task)
-{
+istream& operator>>(istream& eingabe_stream, Task& task){
     unsigned int t_id; string name; string desciption; vector<unsigned int> follow_tasks;
     eingabe_stream >> t_id;
     if(!eingabe_stream.good()) { return eingabe_stream; }
@@ -157,8 +187,7 @@ istream& operator>>(istream& eingabe_stream, Task& task)
     return eingabe_stream;
 }
 
-istream& operator>>(istream& eingabe_stream, Assginment& assignment)
-{
+istream& operator>>(istream& eingabe_stream, Assginment& assignment){
     unsigned int u_id; unsigned int t_id;;
     eingabe_stream >> u_id;
     if(!eingabe_stream.good()) { return eingabe_stream; }
