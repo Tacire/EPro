@@ -106,21 +106,27 @@ string API::read_enclosed_string(istream& is, char terminator)
 
 /**
  * Liest Vektor an Zahlen bis Zeilenende
+ * Gibt bei korrekter Syntax einen String aus,
+ * Sonst wird ein Fehlerbit gesetzt und ein leerer Vektor returned
  */
 vector<unsigned int> read_vector(istream& is){
     vector<unsigned int> result;
     unsigned int entry;
     char seperator;
-    is.get(entry);
-    //Liest bis ch kein
-    while(is.good() && ch != '\n')
+    is >> entry;
+    while(is.good())
     {
+        result.push_back(entry);
+        is.get(seperator);
+        if(seperator != " "){
+            is.setstate(ios_base::failbit);
+        }else if(seperator == '\n'){
+            return result;
+        }
 
-        result += ch;
-        is.get(ch);
+        is >> entry;
     }
-    return result;
-
+    return {};
 }
 
 istream& operator>>(istream& eingabe_stream, User& user)
@@ -138,16 +144,16 @@ istream& operator>>(istream& eingabe_stream, User& user)
 
 istream& operator>>(istream& eingabe_stream, Task& task)
 {
-    unsigned int u_id; string name; string desciption; vector<unsigned int> follow_tasks;
-    eingabe_stream >> u_id;
+    unsigned int t_id; string name; string desciption; vector<unsigned int> follow_tasks;
+    eingabe_stream >> t_id;
     if(!eingabe_stream.good()) { return eingabe_stream; }
     name = read_enclosed_string(eingabe_stream);
     if(!eingabe_stream.good()) { return eingabe_stream; }
     desciption = read_enclosed_string(eingabe_stream);
     if(!eingabe_stream.good()) { return eingabe_stream; }
-
+    follow_tasks = read_vector(eingabe_stream);
     if(eingabe_stream.fail() || eingabe_stream.bad()) { return eingabe_stream; }
-    user = User{u_id, name, surname};
+    task = Task{t_id, name, desciption, follow_tasks};
     return eingabe_stream;
 }
 
