@@ -47,28 +47,40 @@ void API::read_data(const string &file_name){
  * Liest den Task-Abschnitt der Assignment-Verwaltungsdatei
  */
 void API::read_tasks(ifstream &eingabe_stream){  
-    read_tasks(eingabe_stream);
-    read_users(eingabe_stream);
-    read_assignemnts(eingabe_stream);
+    Task task;
 
-    while(!eingabe_stream.eof && !eingabe_stream.bad && !eingabe_stream.fail){
+    eingabe_stream >> task;
+    while(eingabe_stream.good()){
+        task_list[task.t_id] = task; //Erzeugt einen Entry in der Task_List mit t_id und Inhalt der Task
+        eingabe_stream >> task;
     }
-    if(!eingabe_stream.good()) { return is; }
-    if(eingabe_stream.fail() || is.bad()) { return is; }
-    
 }
 
 /**
  * Liest den User-Abschnitt der Assignment-Verwaltungsdatei
  */
 void API::read_users(ifstream &eingabe_stream){
+    User user;
+
+    eingabe_stream >> user;
+    while(eingabe_stream.good()){
+        user_list[user.u_id] = user; //Erzeugt einen Entry in der User_List mit u_id und Inhalt der Task
+        eingabe_stream >> user;
+    }
 }
 
 /**
  * Liest den Assignment-Abschnitt der Assignment-Verwaltungsdatei
  */
 void API::read_assignemnts(ifstream &eingabe_stream){
-    header = read_string(eingabe_stream);
+    Assginment assignment;
+
+    eingabe_stream >> assignment;
+    int i = 0;
+    while(eingabe_stream.good()){
+        assignment_list[i] = assignment; //Erzeugt einen Entry in der Assigment-List
+        eingabe_stream >> assignment;
+    }
 }
 
 /**

@@ -14,7 +14,6 @@ struct User{
   string name;
   string surname;
 };
-
 // User-Struct Überladung eines Eingabe-Streams
 istream& operator>>(istream& eingabe_stream, User& user){};
 
@@ -25,7 +24,6 @@ struct Task{
   string desciption;
   vector<unsigned int> follow_tasks;
 };
-
 // Task-Struct Überladung eines Eingabge-Streams
 istream& operator>>(istream& eingabe_stream, Task& task){};
 
@@ -34,7 +32,6 @@ struct Assginment{
   unsigned int u_id;
   unsigned int t_id;
 };
-
 // Assignment-Struct Überladung eines Eingabge-Streams
 istream& operator>>(istream& eingabe_stream, Assignment& assignment){};
 
@@ -45,9 +42,9 @@ istream& operator>>(istream& eingabe_stream, Assignment& assignment){};
 class API{
     public:
       API(string file_name);
-      vector(user) user_list;
-      vector(task) task_list;
-      vector(assignment) assignments;  
+      map<int, User> user_list;
+      map<int, Task> task_list;
+      map<int, Assignment> assignment_list;
       void update();
     private:
       read_data(string file_name);
