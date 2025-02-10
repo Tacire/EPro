@@ -2,11 +2,16 @@
  * Database-Management System. Nutzt die Schnittstelle zur Textfile (api) um Datenmanagement durchzuführen.
  */
 
-#include dbms.h
+#include "dbms.h"
 
 DBMS::DBMS(){
     api = API(file_name);
-};
+}
+
+void DBMS::update(){
+    api.valid();
+    api.update();
+}
 
 vector<User> DBMS::get_user_list(){
     vector<User> users;
@@ -30,7 +35,7 @@ vector<Assignment> DBMS::get_assignment_list(){
     return assignments;
 }
 
-User DBMS::get_user(const unsigned Int &u_id){
+User DBMS::get_user(const unsigned int &u_id){
     if(api.user_list.find(u_id) != api.user_list.end()){
         return api.user_list[u_id];
     }else{
@@ -38,7 +43,7 @@ User DBMS::get_user(const unsigned Int &u_id){
     }
 }
 
-Task DBMS::get_task(const unsigned Int &t_id){
+Task DBMS::get_task(const unsigned int &t_id){
     if(task_list.find(t_id) != tasl_list.end()){
         return task_list[t_id];
     }else{
@@ -89,7 +94,7 @@ bool DBMS::is_followtask(const unsigned int &task_id){
 }
 
 //Deleted ein Objekt von der ID
-void DBMS::delete(Entry_Type type, const unsigned int &id){
+void DBMS::delete_entry(Entry_Type type, const unsigned int &id){
     if(type == USER){
       if(api.user_list.find((int)id) != api.user_list.end()){
         for(auto assignment : api.assignment_list){
@@ -119,7 +124,7 @@ void DBMS::delete(Entry_Type type, const unsigned int &id){
     }else(throw Parameter_unreadable_102);
 }
 
-void DBMS::assign(const unsigned Int &u_id, const unsigned Int &t_id){
+void DBMS::assign(const unsigned int &u_id, const unsigned int &t_id){
     for(auto assignment : api.assignment_list){
         if(assignment.second.u_id == u_id && assignment.second.t_id == t_id){
             // Zuordnung existiert schon
@@ -142,7 +147,7 @@ void DBMS::assign(const unsigned Int &u_id, const unsigned Int &t_id){
 }
 
 // Löscht ein Assignment, wenn es existiert
-void DBMS::unassign(const unsigned Int &u_id, const unsigned Int &t_id){
+void DBMS::unassign(const unsigned int &u_id, const unsigned int &t_id){
     for(auto assignment : api.assignment_list){
         if(assignment.second.u_id == u_id && assignment.second.t_id == t_id){
             // Zuordnung existiert schon

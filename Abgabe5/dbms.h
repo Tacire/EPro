@@ -18,22 +18,23 @@ enum Entry_Type {
 class DBMS{
   public:
     DBMS();
+    void update();
     vector<User> get_user_list();
     vector<Task> get_task_list();
     vector<Assignment> get_assignment_list();
-    User get_user(const unsigned Int &u_id);
-    Task get_task(const unsigned Int &t_id);
+    User get_user(const unsigned int &u_id);
+    Task get_task(const unsigned int &t_id);
     void add_user(User user);
     void add_task(Task task);
-    void delete(Entry_Type type, const unsigned int &id);
-    void assign(const unsigned Int &u_id, const unsigned Int &t_id);
-    void unassign(const unsigned Int &u_id, const unsigned Int &t_id);
-    vector<unsigned int> get_active_tasks(const unsigned Int &u_id);
-    bool is_followtask(const unsigned int &task_id);
+    void delete_entry(Entry_Type type, const unsigned int &id);
+    void assign(const unsigned int &u_id, const unsigned int &t_id);
+    void unassign(const unsigned int &u_id, const unsigned int &t_id);
+    vector<unsigned int> get_active_tasks(const unsigned int &u_id);
     
   private:
-    constexpr string file_name = "./tasks";
+    bool is_followtask(const unsigned int &task_id);
+    const string file_name = "./tasks";
     API api;
-}
+};
 
 #endif
