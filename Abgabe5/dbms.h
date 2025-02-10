@@ -9,7 +9,6 @@
 #include "helper.h"
 #include "api.h"
 
-
 enum Entry_Type {
   USER,
   TASK,
