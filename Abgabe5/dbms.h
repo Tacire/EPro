@@ -32,7 +32,7 @@ class DBMS{
     
   private:
     bool is_followtask(const unsigned int &task_id);
-    const string file_name = "./tasks";
+    const string file_name = "tasks";
     API api;
 };
 

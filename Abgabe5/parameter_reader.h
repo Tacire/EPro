@@ -1,5 +1,5 @@
 /*
-* Autor: Fritz Bökler (November 2023)
+ * Autor: Fritz Bökler (November 2023)
  *
  * Diese Header Datei enthält nur die Funktion
  * stringstream make_string_stream(int argc, char** args).
