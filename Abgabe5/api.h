@@ -20,7 +20,7 @@ struct User{
 struct Task{
   unsigned int t_id;
   string name;
-  string desciption;
+  string description;
   vector<unsigned int> follow_tasks;
 };
 
@@ -48,6 +48,7 @@ class API{
     map<int, Task> task_list;
     map<int, Assignment> assignment_list;
     void update(const string &file_name);
+    bool valid();
   private:
     void read_data(const string &file_name);
     void read_tasks(ifstream &is);

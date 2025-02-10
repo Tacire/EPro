@@ -9,23 +9,76 @@ API::API(const string &file_name){
     read_data(file_name);
 }
 
+bool API::valid(){
+    // Überprüft Task Einträge
+    for(auto task : task_list){
+        if(task.first != task.second.t_id || task.second.name == "" || task.second.description == ""){
+            return false;
+        }else if(task.second.name[0] != '%' || task.second.name.back() != '%' ){
+            return false;
+        }else if(task.second.description[0] != '%' || task.second.description.back() != '%' ){
+            return false;
+        }
+        // Überprüft alle Follow Tasks auf Korrektheit
+        for(unsigned int follow_tasks : task.second.follow_tasks){
+            //Überprüft ob Task_ID nicht in task_list existiert
+            if(task_list.find(follow_tasks) == task_list.end()){
+                return false;
+            }
+        }
+    }
+    // Überprüft User Einträge
+    for(auto user : user_list){
+        if(user.first != user.second.u_id || user.second.name == "" || user.second.surname == ""){
+            return false;
+        }
+    }
+    // Überprüft Assignment Einträge
+    for(auto assignment : assignment_list){
+        //Überprüft ob angegebene ID's existieren
+        if(user_list.find(assignment.second.u_id) == user_list.end()){
+            return false;
+        }else if(task_list.find(assignment.second.t_id) == task_list.end()){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool API::task_valid(const Task &task){
+    if(task.second.name == "" || task.second.description == ""){
+            return false;
+        }else if(task.second.name[0] != '%' || task.second.name.back() != '%' ){
+            return false;
+        }else if(task.second.description[0] != '%' || task.second.description.back() != '%' ){
+            return false;
+        }
+        // Überprüft alle Follow Tasks auf Korrektheit
+        for(unsigned int follow_tasks : task.second.follow_tasks){
+            //Überprüft ob Task_ID nicht in task_list existiert
+            if(task_list.find(follow_tasks) == task_list.end()){
+                return false;
+            }
+        }
+}
+
 void API::update(const string &file_name){
     ofstream os(file_name, ios_base::trunc);
     if(!os.good()) {throw CantWrite();}
 
     os << "[tasks]\n";
-    for(auto task = task_list.begin(); task != task_list.end(); ++task){
-        cout << task->second;
+    for(auto task : task_list){
+        os << task->second;
         if(!os.good()) {throw CantWrite();}
     }
     os << "\n[users]\n";
-    for(auto user = user_list.begin(); user != user_list.end(); ++user){
-        cout << user->second;
+    for(auto user : user_list){
+        os << user->second;
         if(!os.good()) {throw CantWrite();}
     }
     os << "\n[assignments]\n";
-    for(auto assignment = assignment_list.begin(); assignment != assignment_list.end(); ++assignment){
-        cout << assignment->second;
+    for(auto assignment : assignment_list){
+        os << assignment->second;
         if(!os.good()) {throw CantWrite();}
     }
     return;
@@ -204,13 +257,13 @@ ostream& operator<<(ostream& os, User& user){
 }
 
 ostream& operator<<(ostream& os, Task& task){
-    os << task.u_id << " " << task.name << " " << task.description;
+    os << task.t_id << " " << task.name << " " << task.description;
     if(!os.good()) { return os; }
-    for(unsigned int follow_id : follow_tasks){
+    for(unsigned int follow_id : task.follow_tasks){
         cout << " " << follow_id;
         if(!os.good()) { return os; }
-    }s
-    cout << '\n';
+    }
+    os << '\n';
     return os;
 }
 
