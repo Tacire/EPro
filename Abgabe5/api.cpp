@@ -9,6 +9,28 @@ API::API(const string &file_name){
     read_data(file_name);
 }
 
+void API::update(const string &file_name){
+    ofstream os(file_name, ios_base::trunc);
+    if(!os.good()) {throw CantWrite();}
+
+    os << "[tasks]\n";
+    for(auto task = task_list.begin(); task != task_list.end(); ++task){
+        cout << task->second;
+        if(!os.good()) {throw CantWrite();}
+    }
+    os << "\n[users]\n";
+    for(auto user = user_list.begin(); user != user_list.end(); ++user){
+        cout << user->second;
+        if(!os.good()) {throw CantWrite();}
+    }
+    os << "\n[assignments]\n";
+    for(auto assignment = assignment_list.begin(); assignment != assignment_list.end(); ++assignment){
+        cout << assignment->second;
+        if(!os.good()) {throw CantWrite();}
+    }
+    return;
+}
+
 /**
  * Liest Assignment-Verwaltungsdatei. Erstellt passende C++-Objekte
  */
@@ -174,4 +196,25 @@ istream& operator>>(istream& is, Assignment& assignment){
     if(is.fail() || is.bad()) { return is; }
     assignment = Assignment{u_id, t_id};
     return is;
+}
+
+ostream& operator<<(ostream& os, User& user){
+    os << user.u_id << " " << user.name << " " << user.surname << '\n';
+    return os;
+}
+
+ostream& operator<<(ostream& os, Task& task){
+    os << task.u_id << " " << task.name << " " << task.description;
+    if(!os.good()) { return os; }
+    for(unsigned int follow_id : follow_tasks){
+        cout << " " << follow_id;
+        if(!os.good()) { return os; }
+    }s
+    cout << '\n';
+    return os;
+}
+
+ostream& operator<<(ostream& os, Assignment& assignment){
+    os << assignment.u_id << " " << assignment.t_id << '\n';
+    return os;
 }

@@ -31,12 +31,15 @@ struct Assignment{
 };
 
 
-// Task-Struct Überladung eines Eingabge-Streams
+// Task-Struct Überladung der I/O-Streams
 istream& operator>>(istream& is, Task& task);
-// User-Struct Überladung eines Eingabe-Streams
+ostream& operator<<(ostream& os, Task& task);
+// User-Struct Überladung der I/O-Streams
 istream& operator>>(istream& is, User& user);
-// Assignment-Struct Überladung eines Eingabge-Streams
+ostream& operator<<(ostream& os, User& user);
+// Assignment-Struct Überladung der I/O-Streams
 istream& operator>>(istream& is, Assignment& assignment);
+ostream& operator<<(ostream& os, Assignment& assignment);
 
 class API{
   public:
