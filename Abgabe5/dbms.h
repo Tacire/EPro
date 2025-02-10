@@ -25,10 +25,12 @@ class DBMS{
     Task get_task(const unsigned Int &t_id);
     void add_user(User user);
     void add_task(Task task);
-    void delete(Entry_Type type, const unsigned int &u_id);
+    void delete(Entry_Type type, const unsigned int &id);
     void assign(const unsigned Int &u_id, const unsigned Int &t_id);
     void unassign(const unsigned Int &u_id, const unsigned Int &t_id);
     vector<unsigned int> get_active_tasks(const unsigned Int &u_id);
+    bool is_followtask(const unsigned int &task_id);
+    
   private:
     constexpr string file_name = "./tasks";
     API api;

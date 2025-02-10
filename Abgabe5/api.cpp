@@ -12,74 +12,73 @@ API::API(const string &file_name){
 bool API::valid(){
     // Überprüft Task Einträge
     for(auto task : task_list){
-        if(task.first != task.second.t_id || task.second.name == "" || task.second.description == ""){
+        if(task.first != (int)task.second.t_id){
             return false;
-        }else if(task.second.name[0] != '%' || task.second.name.back() != '%' ){
+        }else if(!task_valid(task.second)){
             return false;
-        }else if(task.second.description[0] != '%' || task.second.description.back() != '%' ){
+        }else if(!follow_tasks_valid(task.second)){
             return false;
-        }
-        // Überprüft alle Follow Tasks auf Korrektheit
-        for(unsigned int follow_tasks : task.second.follow_tasks){
-            //Überprüft ob Task_ID nicht in task_list existiert
-            if(task_list.find(follow_tasks) == task_list.end()){
-                return false;
-            }
         }
     }
     // Überprüft User Einträge
     for(auto user : user_list){
-        if(user.first != user.second.u_id || user.second.name == "" || user.second.surname == ""){
+        if(user.first != (int)user.second.u_id || user.second.name == "" || user.second.surname == ""){
             return false;
         }
     }
     // Überprüft Assignment Einträge
     for(auto assignment : assignment_list){
         //Überprüft ob angegebene ID's existieren
-        if(user_list.find(assignment.second.u_id) == user_list.end()){
+        if(user_list.find((int)assignment.second.u_id) == user_list.end()){
             return false;
-        }else if(task_list.find(assignment.second.t_id) == task_list.end()){
+        }else if(task_list.find((int)assignment.second.t_id) == task_list.end()){
             return false;
         }
     }
     return true;
 }
 
+// Überprüft ob eine Task valid ist. ID wird nicht überprüft
 bool API::task_valid(const Task &task){
-    if(task.second.name == "" || task.second.description == ""){
-            return false;
-        }else if(task.second.name[0] != '%' || task.second.name.back() != '%' ){
-            return false;
-        }else if(task.second.description[0] != '%' || task.second.description.back() != '%' ){
+    if(task.name == "" || task.description == ""){
+        return false;
+    }else if(task.name[0] != '%' || task.name.back() != '%' ){
+        return false;
+    }else if(task.description[0] != '%' || task.description.back() != '%' ){
+        return false;
+    }
+    return true;
+}
+
+// Überprüft alle Follow Tasks auf Korrektheit
+bool API::follow_tasks_valid(const Task &task){
+    for(unsigned int follow_tasks : task.follow_tasks){
+        //Überprüft ob Task_ID nicht in task_list existiert
+        if(task_list.find((int)follow_tasks) == task_list.end()){
             return false;
         }
-        // Überprüft alle Follow Tasks auf Korrektheit
-        for(unsigned int follow_tasks : task.second.follow_tasks){
-            //Überprüft ob Task_ID nicht in task_list existiert
-            if(task_list.find(follow_tasks) == task_list.end()){
-                return false;
-            }
-        }
+    }
+    return true;
 }
 
 void API::update(const string &file_name){
     ofstream os(file_name, ios_base::trunc);
-    if(!os.good()) {throw CantWrite();}
+    if(!os.good()) {throw File_not_writable_603();}
 
     os << "[tasks]\n";
     for(auto task : task_list){
-        os << task->second;
-        if(!os.good()) {throw CantWrite();}
+        os << task.second;
+        if(!os.good()) {throw File_not_writable_603();}
     }
     os << "\n[users]\n";
     for(auto user : user_list){
-        os << user->second;
-        if(!os.good()) {throw CantWrite();}
+        os << user.second;
+        if(!os.good()) {throw File_not_writable_603();}
     }
     os << "\n[assignments]\n";
     for(auto assignment : assignment_list){
-        os << assignment->second;
-        if(!os.good()) {throw CantWrite();}
+        os << assignment.second;
+        if(!os.good()) {throw File_not_writable_603();}
     }
     return;
 }
@@ -90,7 +89,7 @@ void API::update(const string &file_name){
 void API::read_data(const string &file_name){
     ifstream is(file_name);
     if(!is) {
-        throw CantOpen();
+        throw File_not_openable_601();
     }
 
     string header = read_header(is);
@@ -98,12 +97,12 @@ void API::read_data(const string &file_name){
         if(is.eof() && !is.bad()){
             return;
         }else if(is.fail() || is.bad()){
-            throw BadFormat();
+            throw File_format_unknown_602();
         }else{
             if(header == user_header){read_users(is);}
             else if(header == task_header){read_tasks(is);}
             else if(header == assignment_header){read_assignments(is);}
-            else{throw BadFormat();} //Falscher Header
+            else{throw File_format_unknown_602();} //Falscher Header
         }
 
         if(is.good()){

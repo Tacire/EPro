@@ -49,6 +49,8 @@ class API{
     map<int, Assignment> assignment_list;
     void update(const string &file_name);
     bool valid();
+    bool task_valid(const Task &task);
+    bool follow_tasks_valid(const Task &task);
   private:
     void read_data(const string &file_name);
     void read_tasks(ifstream &is);
