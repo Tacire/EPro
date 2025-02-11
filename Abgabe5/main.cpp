@@ -165,6 +165,7 @@ int main(int argc, char** argv)
         if (!stream) {throw Parameter_unreadable_102(); }
         DBMS daten_objekt = DBMS();
         daten_objekt.add_user(user_to_add); //hier wird wenn erfolgreich 100 zurückgegeben
+        cout << "100: Alles erfolgreich\n";
       }
       else if (type == "task") {
         Task_local local_task_to_add;
@@ -177,6 +178,7 @@ int main(int argc, char** argv)
         if (!stream) {throw Parameter_unreadable_102(); }
         DBMS daten_objekt = DBMS();
         daten_objekt.add_task(task_to_add);
+        cout << "100: Alles erfolgreich\n";
       }
     }
     else if (command == "delete") {

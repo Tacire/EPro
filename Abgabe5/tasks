@@ -1,11 +1,5 @@
 [tasks]
-0 %Ein Aufgabentitel% %Eine Aufgabenbeschreibung% 3 7
-3 %Noch eine Aufgabe% %%
-7 %Eine weitere Aufgabe% %Beschreibung% 
 
 [users]
-0 Eine Benutzerin
 
 [assignments]
-0 0
-0 3

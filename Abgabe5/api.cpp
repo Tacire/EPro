@@ -89,7 +89,8 @@ void API::update(const string &file_name){
 void API::read_data(const string &file_name){
     ifstream is(file_name);
     if(!is) {
-        throw File_not_openable_601();
+        update(file_name);
+        return;
     }
 
     string header = read_header(is);

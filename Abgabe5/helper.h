@@ -63,7 +63,7 @@ public:
 
 class User_does_not_exist_401 {
 private:
-    string message = "Eine solche BenutzerIn existiert nicht.\n";
+    string message = "401: Eine solche BenutzerIn existiert nicht.\n";
 
 public:
     const char* what() const throw() {
