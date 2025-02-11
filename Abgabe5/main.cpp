@@ -110,31 +110,34 @@ istream& operator>>(istream& is, User_local& user){
 
 string read_command(stringstream& stream) {
   string command = read_string(stream);
-  const string *cmd = std::find(std::begin(commands_array), std::end(commands_array), command);
-  if (cmd == std::end(commands_array)) {
-    throw Command_unknown_101();
+  for(string template_string : commands_array){
+    if(template_string == command){
+        return command;
+    }
   }
-  return command; //Hier wird nur durchgeführt, wenn Befehl gültig war , also keine Exception geworfen wurde
+  throw Command_unknown_101();
 }
 
 
 string read_type(stringstream& stream) {
   string type = read_string(stream);
-  const string *type_ptr = std::find(std::begin(type_array), std::end(type_array), type);
-  if (type_ptr == std::end(type_array)) {
-    throw Parameter_unreadable_102();
+  for(string template_string : type_array){
+    if(template_string == type){
+        return type;
+    }
   }
-  return type; //Hier wird nur durchgeführt, wenn Befehl gültig war , also keine Exception geworfen wurde
+  throw Parameter_unreadable_102();
 }
 
 
 string read_type_plural(stringstream& stream) {
   string type = read_string(stream);
-  const string *type_ptr = std::find(std::begin(type_plural_array), std::end(type_plural_array), type);
-  if (type_ptr == std::end(type_array)) {
-    throw Parameter_unreadable_102();
+  for(string template_string : type_plural_array){
+    if(template_string == type){
+        return type;
+    }
   }
-  return type; //Hier wird nur durchgeführt, wenn Befehl gültig war , also keine Exception geworfen wurde
+  throw Parameter_unreadable_102();
 }
 
 
@@ -143,7 +146,6 @@ int main(int argc, char** argv)
   stringstream stream = make_string_stream(argc, argv);
 
   try {
-    DBMS daten_objekt = DBMS();
     string command = read_command(stream);
 
     string type = "";
@@ -161,6 +163,7 @@ int main(int argc, char** argv)
         user_to_add.name = local_user_to_add.name;
         user_to_add.surname = local_user_to_add.surname;
         if (!stream) {throw Parameter_unreadable_102(); }
+        DBMS daten_objekt = DBMS();
         daten_objekt.add_user(user_to_add); //hier wird wenn erfolgreich 100 zurückgegeben
       }
       else if (type == "task") {
@@ -172,6 +175,7 @@ int main(int argc, char** argv)
         task_to_add.description = local_task_to_add.description;
         task_to_add.follow_tasks = local_task_to_add.follow_tasks;
         if (!stream) {throw Parameter_unreadable_102(); }
+        DBMS daten_objekt = DBMS();
         daten_objekt.add_task(task_to_add);
       }
     }
@@ -185,27 +189,31 @@ int main(int argc, char** argv)
         type_delete = TASK;
       }
       user_ID = read_int(stream);
+      DBMS daten_objekt = DBMS();
       daten_objekt.delete_entry(type_delete, user_ID);
       cout << "100: Alles erfolgreich\n";
     }
     else if (command == "list") {
       type = read_type_plural(stream);
       if (type == "tasks") {
+        DBMS daten_objekt = DBMS();
         vector<Task> task_list = daten_objekt.get_task_list();
         for (Task task: task_list) {
-          cout << task << "\n";
+          cout << task;
         }
       }
       if (type == "users") {
+        DBMS daten_objekt = DBMS();
         vector<User> user_list = daten_objekt.get_user_list();
         for (User user: user_list) {
-          cout << user << "\n";
+          cout << user;
         }
       }
       if (type == "assignments") {
+        DBMS daten_objekt = DBMS();
         vector<Assignment> assignment_list = daten_objekt.get_assignment_list();
         for (Assignment assignment: assignment_list) {
-          cout << assignment << "\n";
+          cout << assignment;
         }
       }
     }
@@ -213,6 +221,7 @@ int main(int argc, char** argv)
       type = read_type(stream);
       formless_ID = read_int(stream);
       if (type == "user") {
+        DBMS daten_objekt = DBMS();
         User user_to_show = daten_objekt.get_user(formless_ID);
         User_without_ID user_without_id;
         user_without_id.name = user_to_show.name;
@@ -220,6 +229,7 @@ int main(int argc, char** argv)
         cout << user_without_id << "\n";
       }
       if (type == "task") {
+        DBMS daten_objekt = DBMS();
         Task task_to_show = daten_objekt.get_task(formless_ID);
         Task_without_ID task_without_id;
         task_without_id.name = task_to_show.name;
@@ -229,18 +239,21 @@ int main(int argc, char** argv)
       }
     }
     else if (command == "assign") {
+      DBMS daten_objekt = DBMS();
       user_ID = read_int(stream);
       task_ID = read_int(stream);
       daten_objekt.assign(user_ID, task_ID);
       cout << "100: Alles erfolgreich\n";
     }
     else if (command == "unassign") {
+      DBMS daten_objekt = DBMS();
       user_ID = read_int(stream);
       task_ID = read_int(stream);
       daten_objekt.unassign(user_ID, task_ID);
       cout << "100: Alles erfolgreich\n";
     }
     else if (command == "active") {
+      DBMS daten_objekt = DBMS();
       user_ID = read_int(stream);
       vector<unsigned int> active_tasks = daten_objekt.get_active_tasks(user_ID);
       if (!active_tasks.empty()) {
@@ -256,7 +269,6 @@ int main(int argc, char** argv)
       cout << "Hier soll eine Hilfe ausgegeben werden, OHNE CODE 100" << "\n";
       return 0;
     }
-    daten_objekt.update();
   }
   catch (Command_unknown_101& e101) {
     cout << e101.what();

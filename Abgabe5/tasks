@@ -1,14 +1,11 @@
 [tasks]
-0 %Eine Aufgabe% %Mit einer längeren Beschreibung%
-1 %Noch eine Aufgabe% %Kurze Beschreibung%
+0 %Ein Aufgabentitel% %Eine Aufgabenbeschreibung% 3 7
+3 %Noch eine Aufgabe% %%
+7 %Eine weitere Aufgabe% %Beschreibung% 
 
 [users]
-0 Fleissiger Mitarbeiter
-1 NochEin Mitarbeiter
-2 Karl Theodor
-3 Karl Theodor
+0 Eine Benutzerin
 
 [assignments]
 0 0
-0 1
-1 1
+0 3

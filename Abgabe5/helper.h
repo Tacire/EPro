@@ -173,7 +173,7 @@ static const vector<unsigned int> read_vector(istream& is){
     while(is.good())
     {
         result.push_back(entry);
-
+        
         is >> seperator;
         if(seperator == '\n'){ //Bei Zeilenumbruch wird result returned
             is >> skipws;

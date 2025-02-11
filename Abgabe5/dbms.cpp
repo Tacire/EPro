@@ -62,6 +62,7 @@ void DBMS::add_user(User user){
     }else{
         throw Parameter_unreadable_102();
     }
+    update();
     return;
 
 }
@@ -78,6 +79,7 @@ void DBMS::add_task(Task task){
     }
     task.t_id = i;
     api.task_list[(int)i] = task;
+    update();
     return;
 }
 
@@ -103,6 +105,7 @@ void DBMS::delete_entry(Entry_Type type, const unsigned int &id){
           }
         }
         api.user_list.erase((int)id); // Lösche User wenn existierend und nicht zugeordnet
+        update();
       }else{
         throw User_does_not_exist_401();
       }
@@ -118,6 +121,7 @@ void DBMS::delete_entry(Entry_Type type, const unsigned int &id){
           throw Task_not_deletable_202();
         }
         api.task_list.erase((int)id); // Lösche Task wenn existierend und nicht zugeordnet
+        update();
       }else{
         throw Task_does_not_exist_402();
       }
@@ -143,6 +147,7 @@ void DBMS::assign(const unsigned int &u_id, const unsigned int &t_id){
     }
     Assignment new_assignment = {u_id,t_id};
     api.assignment_list[a_id] = new_assignment;
+    update();
     return;
 }
 
@@ -152,6 +157,7 @@ void DBMS::unassign(const unsigned int &u_id, const unsigned int &t_id){
         if(assignment.second.u_id == u_id && assignment.second.t_id == t_id){
             // Zuordnung existiert schon
             api.assignment_list.erase(assignment.first);
+            update();
             return;
         }
     }

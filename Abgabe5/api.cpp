@@ -259,7 +259,7 @@ ostream& operator<<(ostream& os, Task& task){
     os << task.t_id << " " << task.name << " " << task.description;
     if(!os.good()) { return os; }
     for(unsigned int follow_id : task.follow_tasks){
-        cout << " " << follow_id;
+        os << " " << follow_id;
         if(!os.good()) { return os; }
     }
     os << '\n';
