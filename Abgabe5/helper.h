@@ -170,6 +170,7 @@ static const vector<unsigned int> read_vector(istream& is){
         is >> entry;
     }
 
+    //List bis Zeilenumbruch den Vektor in Format "int ws int ws int ws int"
     while(is.good())
     {
         result.push_back(entry);
@@ -187,6 +188,7 @@ static const vector<unsigned int> read_vector(istream& is){
         is >> entry;
     }
     if(is.eof()){
+        is.clear();
         return result;
     }else{
         return {};

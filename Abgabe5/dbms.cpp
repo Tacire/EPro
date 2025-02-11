@@ -7,6 +7,7 @@
 //Ruft im Konstruktor den API-Konstruktor auf. Dieser lädt alle Daten
 DBMS::DBMS() : api(file_name){}
 
+//überprüft gesammelte Daten und startet den Schreibvorgang
 void DBMS::update(){
     api.valid();
     api.update(file_name);
@@ -19,6 +20,7 @@ vector<User> DBMS::get_user_list(){
     }
     return users;
 }
+
 vector<Task> DBMS::get_task_list(){
     vector<Task> tasks;
     for(auto task : api.task_list){
@@ -26,6 +28,7 @@ vector<Task> DBMS::get_task_list(){
     }
     return tasks;
 }
+
 vector<Assignment> DBMS::get_assignment_list(){
     vector<Assignment> assignments;
     for(auto assignment : api.assignment_list){
@@ -50,15 +53,15 @@ Task DBMS::get_task(const unsigned int &t_id){
     }
 }
 
+//Findet nächste freie ID und speichert den Nutzer, wenn Syntax korrekt
 void DBMS::add_user(User user){
-    unsigned int i = 0;
-    while(api.user_list.find((int)i) != api.user_list.end()){
-        i++;
-        //Sucht die nächst freie User_ID
+    int next_smallest_index = 0;
+    if(!api.user_list.empty()){
+        next_smallest_index = api.user_list.rbegin()->first + 1;
     }
     if(user.name != "" && user.surname != ""){
-        user.u_id = i;
-        api.user_list[(int)i] = user;
+        user.u_id = (unsigned)next_smallest_index;
+        api.user_list[next_smallest_index] = user;
     }else{
         throw Parameter_unreadable_102();
     }
@@ -66,19 +69,20 @@ void DBMS::add_user(User user){
     return;
 
 }
+
+//Überprüft ob die Übergebene Task korrektes Format und Inhalt hat, speichert diese mit der nächsten ID in der Task-Map
 void DBMS::add_task(Task task){
-    unsigned int i = 0;
+    int next_smallest_index = 0;
+    if(!api.task_list.empty()){
+        next_smallest_index = api.task_list.rbegin()->first + 1;
+    }
     if(!api.task_valid(task)){
         throw Parameter_unreadable_102();
     }else if(!api.follow_tasks_valid(task)){
         throw Task_does_not_exist_402();
     }
-    while(api.task_list.find((int)i) != api.task_list.end()){
-        i++;
-        //Sucht die nächst freie Task_ID
-    }
-    task.t_id = i;
-    api.task_list[(int)i] = task;
+    task.t_id = (unsigned)next_smallest_index;
+    api.task_list[next_smallest_index] = task;
     update();
     return;
 }
@@ -95,7 +99,7 @@ bool DBMS::is_followtask(const unsigned int &task_id){
     return false;
 }
 
-//Deleted ein Objekt von der ID
+//Deleted ein Objekt von der ID und spezifizierten Typen
 void DBMS::delete_entry(Entry_Type type, const unsigned int &id){
     if(type == USER){
       if(api.user_list.find((int)id) != api.user_list.end()){
@@ -128,6 +132,7 @@ void DBMS::delete_entry(Entry_Type type, const unsigned int &id){
     }else(throw Parameter_unreadable_102());
 }
 
+//Überprüft ob die ID's existieren und erzeugt dann eine Zuordnung
 void DBMS::assign(const unsigned int &u_id, const unsigned int &t_id){
     for(auto assignment : api.assignment_list){
         if(assignment.second.u_id == u_id && assignment.second.t_id == t_id){
@@ -164,6 +169,7 @@ void DBMS::unassign(const unsigned int &u_id, const unsigned int &t_id){
     throw Assignment_does_not_exist_301();
 }
 
+//Gibt alle Tasks aus, die einem Nutzer zugeordnet sind und keine Folgetasks sind
 vector<unsigned int> DBMS::get_active_tasks(const unsigned int &u_id){
     vector<unsigned int> list_active_tasks;
     if(api.user_list.find((int)u_id) == api.user_list.end()){

@@ -8,7 +8,7 @@
 API::API(const string &file_name){
     read_data(file_name);
 }
-
+// Überprüft ob die zwischengespeicherten Daten stimmig sind
 bool API::valid(){
     // Überprüft Task Einträge
     for(auto task : task_list){
@@ -40,7 +40,7 @@ bool API::valid(){
 
 // Überprüft ob eine Task valid ist. ID wird nicht überprüft
 bool API::task_valid(const Task &task){
-    if(task.name == "" || task.description == ""){
+    if(task.name == "" || task.description == "" || task.name.size() < 3 || task.description.size() < 2){
         return false;
     }else if(task.name[0] != '%' || task.name.back() != '%' ){
         return false;
@@ -61,6 +61,8 @@ bool API::follow_tasks_valid(const Task &task){
     return true;
 }
 
+//Schreibt die zwischengespeicherten Daten zurück in die Datei.
+// Schreiben erfolgt sortiert nach Schema tasks -> users -> assignments, jeweils nach id sortiert
 void API::update(const string &file_name){
     ofstream os(file_name, ios_base::trunc);
     if(!os.good()) {throw File_not_writable_603();}

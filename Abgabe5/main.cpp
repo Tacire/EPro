@@ -162,7 +162,7 @@ int main(int argc, char** argv)
         user_to_add.u_id = 0;
         user_to_add.name = local_user_to_add.name;
         user_to_add.surname = local_user_to_add.surname;
-        if (!stream) {throw Parameter_unreadable_102(); }
+        if (!stream && !stream.eof()) {throw Parameter_unreadable_102(); }
         DBMS daten_objekt = DBMS();
         daten_objekt.add_user(user_to_add); //hier wird wenn erfolgreich 100 zurückgegeben
         cout << "100: Alles erfolgreich\n";
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
         task_to_add.name = local_task_to_add.name;
         task_to_add.description = local_task_to_add.description;
         task_to_add.follow_tasks = local_task_to_add.follow_tasks;
-        if (!stream) {throw Parameter_unreadable_102(); }
+        if (!stream && !stream.eof()) {throw Parameter_unreadable_102(); }
         DBMS daten_objekt = DBMS();
         daten_objekt.add_task(task_to_add);
         cout << "100: Alles erfolgreich\n";
